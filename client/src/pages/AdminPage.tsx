@@ -323,25 +323,27 @@ export function AdminPage() {
                 products.map((product) => (
                   <Card
                     key={product.id}
-                    className="p-5 hover-elevate transition-all rounded-lg"
+                    className="p-5 hover-elevate transition-all rounded-lg w-full"
                     data-testid={`card-product-${product.id}`}
                   >
-                    <div className="flex gap-4">
+                    {/* Mobile Layout: flex-col, Desktop Layout: flex-row */}
+                    <div className="flex flex-col md:flex-row gap-4">
                       {/* Product Image */}
                       <div className="flex-shrink-0">
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="w-20 h-20 rounded-md object-cover"
+                          className="w-full md:w-20 h-32 md:h-20 rounded-md object-cover"
                           data-testid={`img-product-${product.id}`}
                         />
                       </div>
 
                       {/* Product Info */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex-1">
-                            <h3 className="font-semibold truncate" data-testid={`text-name-${product.id}`}>
+                      <div className="flex-1 min-w-0 flex flex-col gap-3">
+                        {/* Top Row: Name, Description, Category */}
+                        <div className="flex flex-col sm:flex-row items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-base md:text-sm truncate" data-testid={`text-name-${product.id}`}>
                               {product.name}
                             </h3>
                             <p className="text-sm text-muted-foreground line-clamp-1">
@@ -349,45 +351,49 @@ export function AdminPage() {
                             </p>
                           </div>
                           <Badge
-                            className={isFood(product.category) ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"}
+                            className={`flex-shrink-0 ${isFood(product.category) ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"}`}
                             data-testid={`badge-category-${product.id}`}
                           >
                             {product.category}
                           </Badge>
                         </div>
 
-                        <div className="mt-2 flex items-center justify-between">
-                          <div className="flex gap-2">
-                            <span className="text-lg font-bold" data-testid={`text-price-${product.id}`}>
-                              ${product.price}
-                            </span>
-                            <Badge
-                              variant={product.inStock ? "default" : "destructive"}
-                              data-testid={`badge-stock-${product.id}`}
-                            >
-                              {product.inStock ? "In Stock" : "Out of Stock"}
-                            </Badge>
-                          </div>
+                        {/* Middle Row: Price and Stock Status */}
+                        <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                          <span className="text-lg font-bold" data-testid={`text-price-${product.id}`}>
+                            ${product.price}
+                          </span>
+                          <Badge
+                            variant={product.inStock ? "default" : "destructive"}
+                            data-testid={`badge-stock-${product.id}`}
+                          >
+                            {product.inStock ? "In Stock" : "Out of Stock"}
+                          </Badge>
+                        </div>
 
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleEdit(product)}
-                              data-testid={`button-edit-${product.id}`}
-                            >
-                              <Edit2 className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => deleteMutation.mutate(product.id)}
-                              disabled={deleteMutation.isPending}
-                              data-testid={`button-delete-${product.id}`}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
+                        {/* Bottom Row: Edit and Delete Buttons - Full Width on Mobile */}
+                        <div className="flex gap-2 pt-2 md:pt-0">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEdit(product)}
+                            className="flex-1 md:flex-none"
+                            data-testid={`button-edit-${product.id}`}
+                          >
+                            <Edit2 className="h-4 w-4 mr-2" />
+                            <span className="md:hidden">Edit</span>
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => deleteMutation.mutate(product.id)}
+                            disabled={deleteMutation.isPending}
+                            className="flex-1 md:flex-none"
+                            data-testid={`button-delete-${product.id}`}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            <span className="md:hidden">Delete</span>
+                          </Button>
                         </div>
                       </div>
                     </div>

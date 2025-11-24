@@ -1,6 +1,45 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useState, useEffect } from "react";
 
 export function Footer() {
+  const [, setLocation] = useLocation();
+  const [privacyClickCount, setPrivacyClickCount] = useState(0);
+  const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
+
+  const handlePrivacyClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    // Clear existing timeout
+    if (clickTimeout) {
+      clearTimeout(clickTimeout);
+    }
+
+    const newCount = privacyClickCount + 1;
+    setPrivacyClickCount(newCount);
+
+    // If 7 clicks reached, go to admin dashboard
+    if (newCount === 7) {
+      setLocation("/admin-panel-secret");
+      setPrivacyClickCount(0);
+      return;
+    }
+
+    // Reset count after 3 seconds of no clicking
+    const timeout = setTimeout(() => {
+      setPrivacyClickCount(0);
+    }, 3000);
+
+    setClickTimeout(timeout);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (clickTimeout) {
+        clearTimeout(clickTimeout);
+      }
+    };
+  }, [clickTimeout]);
+
   const footerSections = [
     {
       title: "Shop",
@@ -71,9 +110,13 @@ export function Footer() {
               © 2024 LUXE. All rights reserved.
             </p>
             <div className="flex gap-6">
-              <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <button
+                onClick={handlePrivacyClick}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                data-testid="button-privacy-policy"
+              >
                 Privacy Policy
-              </a>
+              </button>
               <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Terms of Service
               </a>

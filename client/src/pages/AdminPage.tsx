@@ -321,27 +321,26 @@ export function AdminPage() {
                 </Card>
               ) : (
                 products.map((product) => (
-                  <Card
+                  <div
                     key={product.id}
-                    className="p-5 hover-elevate transition-all rounded-lg w-full"
+                    className="flex flex-col md:flex-row bg-white rounded-xl shadow-md overflow-hidden hover-elevate transition-all"
                     data-testid={`card-product-${product.id}`}
                   >
-                    {/* Mobile Layout: flex-col, Desktop Layout: flex-row */}
-                    <div className="flex flex-col md:flex-row gap-4">
-                      {/* Product Image */}
-                      <div className="flex-shrink-0">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-full md:w-20 h-32 md:h-20 rounded-md object-cover"
-                          data-testid={`img-product-${product.id}`}
-                        />
-                      </div>
+                    {/* Product Image - Full width on mobile, fixed size on desktop */}
+                    <div className="w-full md:w-32 md:flex-shrink-0">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-48 md:h-32 rounded-none md:rounded-l-xl object-cover"
+                        data-testid={`img-product-${product.id}`}
+                      />
+                    </div>
 
-                      {/* Product Info */}
-                      <div className="flex-1 min-w-0 flex flex-col gap-3">
-                        {/* Top Row: Name, Description, Category */}
-                        <div className="flex flex-col sm:flex-row items-start justify-between gap-2">
+                    {/* Product Info and Actions Container */}
+                    <div className="flex flex-col flex-1 p-5 md:p-4">
+                      {/* Top Section: Name, Description, Category */}
+                      <div className="flex flex-col gap-2 flex-1">
+                        <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-base md:text-sm truncate" data-testid={`text-name-${product.id}`}>
                               {product.name}
@@ -358,7 +357,7 @@ export function AdminPage() {
                           </Badge>
                         </div>
 
-                        {/* Middle Row: Price and Stock Status */}
+                        {/* Price and Stock Status */}
                         <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
                           <span className="text-lg font-bold" data-testid={`text-price-${product.id}`}>
                             ${product.price}
@@ -370,34 +369,34 @@ export function AdminPage() {
                             {product.inStock ? "In Stock" : "Out of Stock"}
                           </Badge>
                         </div>
+                      </div>
 
-                        {/* Bottom Row: Edit and Delete Buttons - Full Width on Mobile */}
-                        <div className="flex gap-2 pt-2 md:pt-0">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleEdit(product)}
-                            className="flex-1 md:flex-none"
-                            data-testid={`button-edit-${product.id}`}
-                          >
-                            <Edit2 className="h-4 w-4 mr-2" />
-                            <span className="md:hidden">Edit</span>
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => deleteMutation.mutate(product.id)}
-                            disabled={deleteMutation.isPending}
-                            className="flex-1 md:flex-none"
-                            data-testid={`button-delete-${product.id}`}
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            <span className="md:hidden">Delete</span>
-                          </Button>
-                        </div>
+                      {/* Bottom Section: Action Buttons - Grid on mobile, flex on desktop */}
+                      <div className="grid grid-cols-2 gap-3 md:flex md:gap-2 pt-4 md:pt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEdit(product)}
+                          className="w-full md:w-auto"
+                          data-testid={`button-edit-${product.id}`}
+                        >
+                          <Edit2 className="h-4 w-4 md:mr-2" />
+                          <span className="hidden md:inline">Edit</span>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => deleteMutation.mutate(product.id)}
+                          disabled={deleteMutation.isPending}
+                          className="w-full md:w-auto"
+                          data-testid={`button-delete-${product.id}`}
+                        >
+                          <Trash2 className="h-4 w-4 md:mr-2" />
+                          <span className="hidden md:inline">Delete</span>
+                        </Button>
                       </div>
                     </div>
-                  </Card>
+                  </div>
                 ))
               )}
             </div>

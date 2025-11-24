@@ -154,21 +154,52 @@ export function AdminPage() {
     ? "bg-green-100 text-green-800"
     : "bg-amber-100 text-amber-800";
 
+  // Calculate inventory stats
+  const totalProducts = products.length;
+  const inStockCount = products.filter((p) => p.inStock).length;
+  const outOfStockCount = products.filter((p) => !p.inStock).length;
+  const foodCount = products.filter((p) => p.category.toLowerCase() === "food").length;
+  const cosmeticCount = products.filter((p) => p.category.toLowerCase() === "cosmetic").length;
+
   return (
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-10">
-          <h1 className="font-serif text-4xl font-bold mb-3 text-foreground">Product Management</h1>
-          <p className="text-muted-foreground text-lg">Manage your products, add new items, or edit existing ones</p>
+          <h1 className="font-serif text-4xl font-bold mb-3 text-foreground">Inventory Management</h1>
+          <p className="text-muted-foreground text-lg">Organize and manage all items in your store</p>
+        </div>
+
+        {/* Inventory Statistics */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
+          <Card className="p-6 text-center hover-elevate transition-all">
+            <div className="text-3xl font-bold text-foreground mb-1">{totalProducts}</div>
+            <div className="text-sm text-muted-foreground">Total Items</div>
+          </Card>
+          <Card className="p-6 text-center hover-elevate transition-all">
+            <div className="text-3xl font-bold text-green-600 mb-1">{inStockCount}</div>
+            <div className="text-sm text-muted-foreground">In Stock</div>
+          </Card>
+          <Card className="p-6 text-center hover-elevate transition-all">
+            <div className="text-3xl font-bold text-red-600 mb-1">{outOfStockCount}</div>
+            <div className="text-sm text-muted-foreground">Out of Stock</div>
+          </Card>
+          <Card className="p-6 text-center hover-elevate transition-all">
+            <div className="text-3xl font-bold text-green-600 mb-1">{foodCount}</div>
+            <div className="text-sm text-muted-foreground">Food Items</div>
+          </Card>
+          <Card className="p-6 text-center hover-elevate transition-all">
+            <div className="text-3xl font-bold text-amber-600 mb-1">{cosmeticCount}</div>
+            <div className="text-sm text-muted-foreground">Cosmetics</div>
+          </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Add/Edit Product Form */}
-          <Card className="lg:col-span-1 p-8 h-fit sticky top-8">
+          <Card className="lg:col-span-1 p-8 h-fit sticky top-8 rounded-xl">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="font-semibold text-lg">
-                {editingId ? "Edit Product" : "Add Product"}
+              <h2 className="font-semibold text-lg text-foreground">
+                {editingId ? "✏️ Edit Item" : "➕ Add New Item"}
               </h2>
               {editingId && (
                 <Button
@@ -280,7 +311,7 @@ export function AdminPage() {
           {/* Products Table */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="font-semibold text-xl text-foreground">All Products ({products.length})</h2>
+              <h2 className="font-semibold text-xl text-foreground">📦 Item List ({products.length})</h2>
             </div>
 
             <div className="space-y-3">
@@ -292,7 +323,7 @@ export function AdminPage() {
                 products.map((product) => (
                   <Card
                     key={product.id}
-                    className="p-4 hover-elevate transition-all"
+                    className="p-5 hover-elevate transition-all rounded-lg"
                     data-testid={`card-product-${product.id}`}
                   >
                     <div className="flex gap-4">

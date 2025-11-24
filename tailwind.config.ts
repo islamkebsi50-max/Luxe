@@ -6,6 +6,7 @@ export default {
   theme: {
     extend: {
       borderRadius: {
+        xl: ".75rem", /* 12px */
         lg: ".5625rem", /* 9px */
         md: ".375rem", /* 6px */
         sm: ".1875rem", /* 3px */

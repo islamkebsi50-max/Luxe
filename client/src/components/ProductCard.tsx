@@ -23,21 +23,25 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const buttonColor = isFoodCategory 
     ? "bg-green-600 hover:bg-green-700 text-white"
     : "bg-amber-600 hover:bg-amber-700 text-white";
+  const shadowClass = isFoodCategory ? "shadow-sm hover:shadow-md" : "shadow-md hover:shadow-lg";
 
   return (
-    <Card className="group overflow-hidden hover-elevate transition-all" data-testid={`card-product-${product.id}`}>
+    <Card 
+      className={`group overflow-hidden rounded-xl hover-elevate transition-all ${shadowClass}`} 
+      data-testid={`card-product-${product.id}`}
+    >
       <Link href={`/products/${product.id}`}>
-        <div className="relative aspect-square overflow-hidden bg-muted">
+        <div className="relative aspect-square overflow-hidden bg-muted rounded-t-xl">
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             data-testid={`img-product-${product.id}`}
           />
           {hasDiscount && (
             <Badge
               variant="destructive"
-              className="absolute top-3 right-3"
+              className="absolute top-4 right-4"
               data-testid={`badge-discount-${product.id}`}
             >
               -{discountPercent}%
@@ -49,10 +53,10 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
       <div className="p-6 space-y-4">
         <Link href={`/products/${product.id}`}>
           <div>
-            <p className={`text-xs font-semibold mb-2 px-2 py-1 rounded w-fit ${badgeColor}`}>
+            <p className={`text-xs font-semibold mb-2 px-3 py-1 rounded-md w-fit ${badgeColor}`}>
               {product.category}
             </p>
-            <h3 className="font-semibold text-lg leading-tight text-foreground hover:text-primary transition-colors" data-testid={`text-product-name-${product.id}`}>
+            <h3 className="font-semibold text-lg leading-tight text-foreground hover:text-primary transition-colors line-clamp-2" data-testid={`text-product-name-${product.id}`}>
               {product.name}
             </h3>
           </div>
@@ -78,7 +82,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
         </div>
 
         <Button
-          className={`w-full ${buttonColor} hover-elevate active-elevate-2 transition-colors`}
+          className={`w-full ${buttonColor} hover-elevate active-elevate-2 transition-colors rounded-lg`}
           onClick={(e) => {
             e.preventDefault();
             onAddToCart(product.id);

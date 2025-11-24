@@ -15,10 +15,27 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
   const [location] = useLocation();
 
   const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "Food", href: "/products?category=food" },
-    { label: "Cosmetics", href: "/products?category=cosmetic" },
+    { label: "Home", href: "/", id: "home" },
+    { label: "Food", href: "/products?category=food", id: "food" },
+    { label: "Cosmetics", href: "/products?category=cosmetic", id: "cosmetics" },
   ];
+
+  const getNavButtonClass = (href: string, id: string) => {
+    const isActive = location === href || (href === "/" && location === "/");
+    
+    if (!isActive) {
+      return "hover-elevate text-foreground";
+    }
+
+    // Active state styling based on category
+    if (id === "food") {
+      return "bg-green-600 text-white hover:bg-green-700 hover-elevate";
+    } else if (id === "cosmetics") {
+      return "bg-amber-600 text-white hover:bg-amber-700 hover-elevate";
+    }
+    
+    return "hover-elevate text-foreground";
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -33,17 +50,28 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
             </SheetTrigger>
             <SheetContent side="left" className="w-64">
               <nav className="flex flex-col gap-2 mt-8">
-                {navLinks.map((link) => (
-                  <Link key={link.href} href={link.href}>
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start text-base hover-elevate"
-                      data-testid={`link-${link.label.toLowerCase()}`}
-                    >
-                      {link.label}
-                    </Button>
-                  </Link>
-                ))}
+                {navLinks.map((link) => {
+                  const isActive = location === link.href || (link.href === "/" && location === "/");
+                  let buttonClass = "w-full justify-start text-base hover-elevate";
+                  
+                  if (isActive && link.id === "food") {
+                    buttonClass += " bg-green-600 text-white";
+                  } else if (isActive && link.id === "cosmetics") {
+                    buttonClass += " bg-amber-600 text-white";
+                  }
+                  
+                  return (
+                    <Link key={link.href} href={link.href}>
+                      <Button
+                        variant="ghost"
+                        className={buttonClass}
+                        data-testid={`link-${link.label.toLowerCase()}`}
+                      >
+                        {link.label}
+                      </Button>
+                    </Link>
+                  );
+                })}
               </nav>
             </SheetContent>
           </Sheet>
@@ -61,7 +89,7 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
               <Link key={link.href} href={link.href}>
                 <Button
                   variant="ghost"
-                  className="hover-elevate text-foreground"
+                  className={getNavButtonClass(link.href, link.id)}
                   data-testid={`link-${link.label.toLowerCase()}`}
                 >
                   {link.label}

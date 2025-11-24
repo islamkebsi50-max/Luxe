@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { HomePage } from "@/pages/HomePage";
 import { ProductListingPage } from "@/pages/ProductListingPage";
 import { ProductDetailPage } from "@/pages/ProductDetailPage";
@@ -109,25 +110,26 @@ function AppContent() {
   const categoryFilter = urlParams.get("category") || "";
 
   return (
-    <Switch>
-      {/* Secret Admin Routes - Hidden paths */}
-      <Route path="/admin-panel-secret">
-        <AdminLayout>
-          <AdminPage />
-        </AdminLayout>
-      </Route>
-      <Route path="/admin">
-        <AdminLayout>
-          <AdminPage />
-        </AdminLayout>
-      </Route>
+    <>
+      <Switch>
+        {/* Secret Admin Routes - Hidden paths */}
+        <Route path="/admin-panel-secret">
+          <AdminLayout>
+            <AdminPage />
+          </AdminLayout>
+        </Route>
+        <Route path="/admin">
+          <AdminLayout>
+            <AdminPage />
+          </AdminLayout>
+        </Route>
 
-      {/* Customer Routes */}
-      <Route>
-        <div className="flex flex-col min-h-screen">
-          <Header
-            cartItemCount={cartItems.length}
-            onCartClick={() => setCartOpen(true)}
+        {/* Customer Routes */}
+        <Route>
+          <div className="flex flex-col min-h-screen">
+            <Header
+              cartItemCount={cartItems.length}
+              onCartClick={() => setCartOpen(true)}
             onSearchChange={handleSearchChange}
           />
 
@@ -185,6 +187,8 @@ function AppContent() {
         </div>
       </Route>
     </Switch>
+    <WhatsAppButton />
+    </>
   );
 }
 

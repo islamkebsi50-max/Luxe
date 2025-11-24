@@ -25,18 +25,6 @@ function AppContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
 
-  // Secret admin access: Ctrl+Shift+A
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.shiftKey && e.key === "A") {
-        e.preventDefault();
-        setLocation("/admin");
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [setLocation]);
 
   const { data: products = [] } = useQuery<Product[]>({
     queryKey: ["/api/products"],
@@ -122,7 +110,12 @@ function AppContent() {
 
   return (
     <Switch>
-      {/* Admin Routes */}
+      {/* Secret Admin Routes - Hidden paths */}
+      <Route path="/admin-panel-secret">
+        <AdminLayout>
+          <AdminPage />
+        </AdminLayout>
+      </Route>
       <Route path="/admin">
         <AdminLayout>
           <AdminPage />

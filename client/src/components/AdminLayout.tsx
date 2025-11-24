@@ -7,25 +7,25 @@ interface AdminLayoutProps {
 }
 
 export function AdminLayout({ children }: AdminLayoutProps) {
-  const [location, setLocation] = useLocation();
+  const [location] = useLocation();
 
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar */}
-      <aside className="w-64 border-r bg-card flex flex-col">
-        <div className="p-6 border-b">
+      <aside className="w-64 border-r bg-card/80 backdrop-blur-sm flex flex-col">
+        <div className="p-8 border-b bg-background/50">
           <Link href="/admin">
-            <h1 className="font-serif text-2xl font-bold hover-elevate cursor-pointer" data-testid="link-admin-logo">
+            <h1 className="font-serif text-2xl font-bold text-foreground hover-elevate cursor-pointer transition-colors" data-testid="link-admin-logo">
               Admin
             </h1>
           </Link>
         </div>
 
-        <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+        <nav className="flex-1 overflow-y-auto p-6 space-y-3">
           <Link href="/admin">
             <Button
               variant={location === "/admin" ? "default" : "ghost"}
-              className="w-full justify-start hover-elevate"
+              className="w-full justify-start hover-elevate text-foreground"
               data-testid="link-admin-dashboard"
             >
               <LayoutDashboard className="mr-2 h-4 w-4" />
@@ -34,11 +34,11 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </Link>
         </nav>
 
-        <div className="p-4 border-t">
+        <div className="p-6 border-t">
           <Link href="/">
             <Button
               variant="outline"
-              className="w-full justify-start hover-elevate"
+              className="w-full justify-start hover-elevate text-foreground"
               data-testid="link-back-to-store"
             >
               <LogOut className="mr-2 h-4 w-4" />
@@ -49,7 +49,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto bg-background">
         {children}
       </main>
     </div>

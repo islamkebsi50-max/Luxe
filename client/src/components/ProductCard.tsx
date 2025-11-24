@@ -17,15 +17,15 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
     : 0;
 
   const isFoodCategory = product.category.toLowerCase() === "food";
-  const categoryColor = isFoodCategory 
-    ? "border-l-4 border-l-green-500" 
-    : "border-l-4 border-l-amber-500";
   const badgeColor = isFoodCategory
-    ? "bg-green-100 text-green-800"
-    : "bg-amber-100 text-amber-800";
+    ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100"
+    : "bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-100";
+  const buttonColor = isFoodCategory 
+    ? "bg-green-600 hover:bg-green-700 text-white"
+    : "bg-amber-600 hover:bg-amber-700 text-white";
 
   return (
-    <Card className={`group overflow-hidden hover-elevate ${categoryColor}`} data-testid={`card-product-${product.id}`}>
+    <Card className="group overflow-hidden hover-elevate transition-all" data-testid={`card-product-${product.id}`}>
       <Link href={`/products/${product.id}`}>
         <div className="relative aspect-square overflow-hidden bg-muted">
           <img
@@ -46,11 +46,13 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
         </div>
       </Link>
 
-      <div className="p-4 space-y-3">
+      <div className="p-6 space-y-4">
         <Link href={`/products/${product.id}`}>
           <div>
-            <p className={`text-xs font-semibold mb-1 px-2 py-1 rounded w-fit ${badgeColor}`}>{product.category}</p>
-            <h3 className="font-semibold text-lg leading-tight hover:text-primary transition-colors" data-testid={`text-product-name-${product.id}`}>
+            <p className={`text-xs font-semibold mb-2 px-2 py-1 rounded w-fit ${badgeColor}`}>
+              {product.category}
+            </p>
+            <h3 className="font-semibold text-lg leading-tight text-foreground hover:text-primary transition-colors" data-testid={`text-product-name-${product.id}`}>
               {product.name}
             </h3>
           </div>
@@ -58,17 +60,17 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
         <div className="flex items-center gap-1">
           <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-          <span className="text-sm font-medium">{product.rating}</span>
+          <span className="text-sm font-medium text-foreground">{product.rating}</span>
           <span className="text-sm text-muted-foreground">({product.reviewCount})</span>
         </div>
 
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold" data-testid={`text-price-${product.id}`}>
+            <span className="text-2xl font-bold text-foreground" data-testid={`text-price-${product.id}`}>
               ${product.price}
             </span>
             {hasDiscount && (
-              <span className="text-lg text-muted-foreground line-through">
+              <span className="text-sm text-muted-foreground line-through">
                 ${product.originalPrice}
               </span>
             )}
@@ -76,7 +78,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
         </div>
 
         <Button
-          className="w-full hover-elevate active-elevate-2"
+          className={`w-full ${buttonColor} hover-elevate active-elevate-2 transition-colors`}
           onClick={(e) => {
             e.preventDefault();
             onAddToCart(product.id);

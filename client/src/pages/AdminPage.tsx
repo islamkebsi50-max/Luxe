@@ -158,14 +158,14 @@ export function AdminPage() {
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="font-serif text-4xl font-bold mb-2">Product Management</h1>
-          <p className="text-muted-foreground">Manage your products, add new items, or edit existing ones</p>
+        <div className="mb-10">
+          <h1 className="font-serif text-4xl font-bold mb-3 text-foreground">Product Management</h1>
+          <p className="text-muted-foreground text-lg">Manage your products, add new items, or edit existing ones</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Add/Edit Product Form */}
-          <Card className="lg:col-span-1 p-6 h-fit sticky top-8">
+          <Card className="lg:col-span-1 p-8 h-fit sticky top-8">
             <div className="flex items-center justify-between mb-6">
               <h2 className="font-semibold text-lg">
                 {editingId ? "Edit Product" : "Add Product"}
@@ -279,8 +279,8 @@ export function AdminPage() {
 
           {/* Products Table */}
           <div className="lg:col-span-2">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-semibold text-lg">All Products ({products.length})</h2>
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="font-semibold text-xl text-foreground">All Products ({products.length})</h2>
             </div>
 
             <div className="space-y-3">

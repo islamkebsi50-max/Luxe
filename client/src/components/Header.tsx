@@ -21,7 +21,7 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Mobile Menu */}
@@ -32,7 +32,7 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-64">
-              <nav className="flex flex-col gap-4 mt-8">
+              <nav className="flex flex-col gap-2 mt-8">
                 {navLinks.map((link) => (
                   <Link key={link.href} href={link.href}>
                     <Button
@@ -50,7 +50,7 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
 
           {/* Logo */}
           <Link href="/">
-            <h1 className="font-serif text-2xl font-bold cursor-pointer hover-elevate px-2 py-1 rounded-md" data-testid="link-logo">
+            <h1 className="font-serif text-2xl font-bold cursor-pointer hover-elevate px-3 py-2 rounded-md transition-colors" data-testid="link-logo">
               LUXE
             </h1>
           </Link>
@@ -61,7 +61,7 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
               <Link key={link.href} href={link.href}>
                 <Button
                   variant="ghost"
-                  className="hover-elevate"
+                  className="hover-elevate text-foreground"
                   data-testid={`link-${link.label.toLowerCase()}`}
                 >
                   {link.label}
@@ -71,13 +71,13 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
           </nav>
 
           {/* Search Bar - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-md mx-4">
+          <div className="hidden md:flex flex-1 max-w-sm mx-6">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
               <Input
                 type="search"
                 placeholder="Search products..."
-                className="pl-9"
+                className="pl-9 bg-secondary/50 border-0 focus-visible:ring-primary"
                 onChange={(e) => onSearchChange(e.target.value)}
                 data-testid="input-search"
               />
@@ -88,7 +88,7 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
           <Button
             variant="ghost"
             size="icon"
-            className="relative hover-elevate"
+            className="relative hover-elevate text-foreground"
             onClick={onCartClick}
             data-testid="button-cart"
           >
@@ -112,7 +112,7 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
             <Input
               type="search"
               placeholder="Search products..."
-              className="pl-9"
+              className="pl-9 bg-secondary/50 border-0 focus-visible:ring-primary"
               onChange={(e) => onSearchChange(e.target.value)}
               data-testid="input-search-mobile"
             />

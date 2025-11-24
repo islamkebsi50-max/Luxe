@@ -1,153 +1,149 @@
 # E-Commerce Platform Design Guidelines
 
 ## Design Approach
-**Reference-Based Strategy**: Drawing inspiration from modern e-commerce leaders like Shopify, Allbirds, and Everlane. Focus on clean product presentation, immersive imagery, and seamless shopping experience.
+**Premium & Minimalist Strategy**: Drawing inspiration from modern luxury e-commerce leaders like Allbirds, Everlane, and Warby Parker. Focus on clean product presentation, generous whitespace, and a sophisticated visual hierarchy that adapts based on product category.
 
 ## Core Design Principles
 1. **Product-First Philosophy**: Products are heroes - generous imagery, clear pricing, minimal distraction
-2. **Trust & Clarity**: Professional polish that builds confidence in purchasing decisions
-3. **Effortless Shopping Flow**: Reduce friction from discovery to checkout
-4. **Category-Specific Branding**: Green accents for Food products, Gold/Pink accents for Cosmetics
+2. **Minimalist Aesthetic**: Embracing whitespace, clean typography, and a calm visual environment
+3. **Trust & Clarity**: Professional polish that builds confidence in purchasing decisions
+4. **Category-Specific Theming**: Visual adaptation based on product type creates intuitive navigation
+5. **Generous Whitespace**: Liberal padding and margins create breathing room and reduce cognitive load
 
-## Color Palette
+## Premium Visual Foundation
 
-### Food Category - Green
-- Primary: `#10B981` (Emerald Green)
-- Light: `#D1FAE5` (Light Green)
-- Dark: `#065F46` (Dark Green)
-- Uses: Food category badges, Food tab active state, Food product highlights
+### Base Colors (Light Mode)
+- **Background**: Pure white (`#FFFFFF` / `0 0% 100%`)
+- **Text Primary**: Dark charcoal (`#2D3D47` / `0 0% 20%`) - not pure black for reduced eye strain
+- **Text Secondary**: Soft gray (`#6B7280` / `0 0% 42%`) for supporting content
+- **Cards/Panels**: Off-white (`#FAFAFA` / `0 0% 98%`) with subtle borders
+- **Borders**: Light gray (`#E5E7EB` / `0 0% 90%`) - minimal visual weight
 
-### Cosmetics Category - Gold/Pink
-- Primary: `#D97706` (Amber Gold)
-- Accent: `#EC4899` (Rose Pink)
-- Light: `#FED7AA` (Light Gold)
-- Dark: `#92400E` (Dark Gold)
-- Uses: Cosmetics category badges, Cosmetics tab active state, Cosmetics product highlights
-
-## Typography System
+### Typography System
 
 **Font Families** (via Google Fonts):
-- Primary: Inter (400, 500, 600, 700) - UI elements, body text, pricing
-- Accent: Playfair Display (600, 700) - Headers, brand moments
+- Primary: Inter (400, 500, 600, 700) - Clean, modern, highly legible
+- Accent: Playfair Display (600, 700) - Elegant headers and brand moments
 
 **Hierarchy**:
-- Hero Headlines: text-5xl to text-7xl, font-bold, Playfair Display
-- Product Titles: text-xl to text-2xl, font-semibold, Inter
-- Section Headers: text-3xl to text-4xl, font-bold
-- Body Text: text-base, font-normal, leading-relaxed
-- Product Prices: text-2xl, font-bold for current price, text-lg line-through for original
-- Microcopy (labels, captions): text-sm, font-medium
+- Hero Headlines: Playfair Display, 5xl-7xl, font-bold, dark charcoal
+- Section Headers: Playfair Display, 3xl-4xl, font-bold
+- Product Titles: Inter, xl-2xl, font-semibold
+- Body Text: Inter, base, font-normal, line-height-relaxed, secondary gray
+- Product Prices: Inter, 2xl, font-bold, dark charcoal
+- Microcopy: Inter, sm, font-medium, secondary gray
 
-## Layout & Spacing System
+## Dual Theme Color Palette
 
-**Tailwind Spacing Units**: Consistently use 4, 6, 8, 12, 16, 20, 24, 32
-- Component padding: p-6 to p-8
-- Section spacing: py-16 to py-32
-- Card gaps: gap-6 to gap-8
-- Container max-width: max-w-7xl
+### Food Category - Fresh & Organic
+**Primary Color**: Sage Green (`#059669` / `160 84% 39%`)
+- Used for: Food category badges, Food tab active state, "Add to Cart" buttons for food items
+- Hover state: Slightly darker sage (`#047857`)
+- Light accent: Very light green (`#ECFDF5`) for backgrounds/highlights
+- Psychology: Fresh, natural, trustworthy, farm-to-table, healthy
+
+**Secondary Accent**: Warm Earth Orange (`#D97706` / `38 92% 50%`)
+- Used for: Secondary CTAs, decorative accents, complementary highlights
+
+### Cosmetics Category - Luxurious & Refined
+**Primary Color**: Warm Gold (`#D97706` / `38 92% 50%`)
+- Used for: Cosmetics category badges, Cosmetics tab active state, "Add to Cart" buttons for cosmetics
+- Hover state: Slightly darker gold (`#B45309`)
+- Light accent: Very light gold/cream (`#FFFBEB`) for backgrounds/highlights
+
+**Secondary Accent**: Rose Pink (`#EC4899` / `334 85% 57%`)
+- Used for: Premium highlights, decorative accents, special offers
+- Creates an upscale, beauty-focused aesthetic
+
+## Spacing & Layout System
+
+**Principle**: Generous whitespace creates premium feel
+- Extra-large padding: p-8 to p-12 for major sections
+- Standard padding: p-6 for cards and components
+- Section spacing: py-20 to py-32 between major sections
+- Container max-width: max-w-7xl for content containment
+- Card gaps: gap-6 to gap-8 for balanced breathing room
 
 **Grid Structures**:
-- Product grids: grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6
-- Featured collections: grid-cols-1 md:grid-cols-2 gap-8
-- Category cards: grid-cols-2 md:grid-cols-4 gap-4
+- Product grids: grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8
+- Featured collections: grid-cols-1 md:grid-cols-2 gap-10
+- Category toggle: Large, well-spaced buttons with clear visual feedback
 
-## Component Library
+## Component Design
 
-### Navigation
-- Sticky header with logo left, search center, cart/account right
-- Category links for Food and Cosmetics with color-coded indicators
-- Breadcrumb navigation on product/category pages
-- Mobile: Hamburger menu with slide-out drawer
+### Navigation & Header
+- Sticky positioning with minimal border (light gray)
+- Logo in serif font, dark charcoal, generous left padding
+- Search bar with light gray borders, subtle focus state
+- Cart icon with badge - uses category color if applicable
+- Category links with color-coded indicators (green for food, gold for cosmetics)
 
 ### Product Cards
-- Square aspect ratio image (1:1) with hover zoom effect
-- Product name, price prominently displayed
-- Quick add to cart button on hover (desktop)
-- Category-colored badge based on product type
-- Rating stars below title
-- Color-coded borders based on category
+- White cards with subtle light gray border
+- Square aspect ratio images with gentle hover zoom (scale-105)
+- Product name in semi-bold Inter, dark charcoal
+- Category badge with appropriate dual-theme color
+- Price in bold, dark charcoal
+- "Add to Cart" button uses dual-theme color matching category
+- Shadow on hover (subtle elevation, not harsh drop shadow)
+- Generous internal padding (p-6)
 
-### Shopping Cart
-- Slide-out drawer from right (desktop), full-page (mobile)
-- Line items with thumbnail, title, quantity selector, price, remove
-- Sticky footer with subtotal and checkout CTA
-- Free shipping progress indicator
+### Category Toggle/Tabs
+- Large, clear buttons (min-h-10 to min-h-12)
+- Background color fills entire button when active
+- Uses dual-theme colors (green for food, gold for cosmetics)
+- Inactive state: White background with light border
+- Transition animations smooth but brisk (200ms)
+- Extra padding for touch-friendly interaction
 
-### Product Detail Page
-- Large image gallery: main image + 4-6 thumbnails in grid below
-- Right panel: Title, price, star rating, short description
-- Size/variant selector with visual swatches
-- Quantity selector + prominent "Add to Cart" button
-- Accordion sections: Description, Specifications, Shipping, Reviews
-- "You May Also Like" carousel below
+### Forms (Admin)
+- Light gray input backgrounds
+- Subtle focus states with category color border
+- Clear, readable labels in semi-bold Inter
+- Generous spacing between form fields
+- Category dropdown matches dual-theme
 
-### Search & Filters
-- Sidebar filters (category, price range) on desktop
-- Bottom sheet filters on mobile
-- Active filters displayed as dismissible tags
-- Sort dropdown: Featured, Price Low-High, Price High-Low, Newest
+### Whitespace Strategy
+- Minimum 20px margin between major sections
+- Padding inside cards: p-6 minimum
+- Gap between card columns: gap-8 (32px)
+- Gap between grid items: gap-6 (24px)
+- Hero section padding: py-32
+- Standard section padding: py-20
 
-### Checkout Flow
-- Multi-step with progress indicator: Cart → Shipping → Payment → Confirm
-- Form fields with clear labels, validation states
-- Order summary sticky sidebar (desktop)
-- Trust badges near payment section
+## Visual Interactions
 
-## Images
+**Hover States**:
+- Product cards: Subtle shadow elevation, image scale (105%)
+- Buttons: Slightly darker color, maintained category theming
+- Links: Slight color shift, no underline until hover
 
-**Hero Section**: 
-- Full-width hero banner (h-screen or min-h-[600px]) featuring lifestyle product photography
-- 2-3 images rotating in subtle crossfade carousel
-- Overlay with heading + CTA button (blurred background for button: backdrop-blur-md bg-white/20)
+**Active States**:
+- Category buttons: Full background color fill with white/contrasting text
+- Form inputs: Focus ring in category color (green for food, gold for cosmetics)
 
-**Product Images**:
-- High-quality product photography on clean white/light gray backgrounds
-- Lifestyle shots showing products in use
-- 1200x1200px minimum resolution for main product images
-
-**Category Banners**:
-- 16:9 aspect ratio hero images for each category page
-- Atmospheric lifestyle photography relevant to category
-
-**Additional Imagery**:
-- About/Story section: Team photos, behind-the-scenes manufacturing
-- Instagram feed grid showing user-generated content
-- Trust indicators: Payment logos, security badges, shipping icons
-
-**Image Placement**:
-- Homepage: Large hero, featured collections (3-4 with images), category grid (6-8 with images)
-- Product pages: Gallery of 5-7 images per product
-- Footer: Payment method logos
-
-## Interactions & States
-
-**Micro-interactions**:
-- Product card image scale on hover (scale-105)
-- Smooth cart drawer slide animation
-- Quantity button haptic feedback (slight scale on click)
-- Form field focus states with border accent
-- Category tab smooth transitions
-
-**Loading States**:
-- Skeleton screens for product grids
-- Spinner for cart updates
-- Progress bar for checkout steps
+**Animations**:
+- Transitions: 200ms ease-out for most interactions
+- Hover effects: Smooth and subtle, not jarring
+- Page transitions: Fade effects, minimal motion
 
 ## Accessibility
 - Proper heading hierarchy (h1 → h6)
-- ARIA labels on interactive elements (cart button, search)
-- Keyboard navigation for all interactions
-- Focus indicators on all clickable elements (ring-2)
-- Alt text for all product images
+- Focus indicators visible in category colors
+- Alt text on all product images
+- Color contrast: WCAG AA compliant (dark charcoal on white is 12:1 contrast)
+- Font sizes never below 14px for readability
+- Line height: 1.6 or greater for body text
 
-## Key Pages Structure
+## Key Design Rules
 
-**Homepage**: Category toggle (Food/Cosmetics) → Product grid filtered by category → Featured collections → Newsletter signup → Footer
+1. **Never use pure black** - Always use dark charcoal (#2D3D47)
+2. **Maximize whitespace** - More is better than less
+3. **One primary color per category** - Green for food, Gold for cosmetics
+4. **Clean sans-serif first** - Use serif only for headers and branding
+5. **Subtle shadows** - Use elevation sparingly, prefer color/whitespace
+6. **Generous padding** - 24px minimum between content and edges
+7. **Clear visual hierarchy** - Size and color guide user attention
+8. **Dual-theme consistency** - Every category color carries its theme throughout
 
-**Product Listing**: Breadcrumb → Filters sidebar + Product grid (4-column) → Load more/pagination
-
-**Product Detail**: Breadcrumb → Image gallery + Details panel → Related products → Footer
-
-**Cart/Checkout**: Persistent header → Content area → Sticky summary (desktop) → Footer
-
-This design delivers a premium, conversion-optimized e-commerce experience with modern aesthetics and intuitive user flows.
+This design delivers a premium, refined e-commerce experience that feels modern, trustworthy, and beautifully organized.

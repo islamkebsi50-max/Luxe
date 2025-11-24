@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model cart_items {
+  id         String @id @default(dbgenerated("gen_random_uuid()")) @db.VarChar
+  session_id String
+  product_id String
+  quantity   Int    @default(1)
+}
+
+model orders {
+  id               String  @id @default(dbgenerated("gen_random_uuid()")) @db.VarChar
+  session_id       String
+  items            String
+  total            Decimal @db.Decimal(10, 2)
+  shipping_name    String
+  shipping_email   String
+  shipping_address String
+  shipping_city    String
+  shipping_zip     String
+  shipping_country String
+}
+
+model products {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.VarChar
+  name           String
+  description    String
+  price          Decimal  @db.Decimal(10, 2)
+  original_price Decimal? @db.Decimal(10, 2)
+  category       String
+  image          String
+  images         String[]
+  rating         Decimal  @default(4.5) @db.Decimal(2, 1)
+  review_count   Int      @default(0)
+  in_stock       Boolean  @default(true)
+  featured       Boolean  @default(false)
+}

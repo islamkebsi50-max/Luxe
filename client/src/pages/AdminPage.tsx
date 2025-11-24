@@ -323,7 +323,7 @@ export function AdminPage() {
                 products.map((product) => (
                   <div
                     key={product.id}
-                    className="flex flex-col md:flex-row bg-white rounded-xl shadow-md overflow-hidden hover-elevate transition-all"
+                    className="flex flex-col md:flex-row bg-card rounded-xl shadow-md overflow-visible md:overflow-hidden hover-elevate transition-all"
                     data-testid={`card-product-${product.id}`}
                   >
                     {/* Product Image - Full width on mobile, fixed size on desktop */}

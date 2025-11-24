@@ -13,6 +13,8 @@ import { HomePage } from "@/pages/HomePage";
 import { ProductListingPage } from "@/pages/ProductListingPage";
 import { ProductDetailPage } from "@/pages/ProductDetailPage";
 import { CheckoutPage } from "@/pages/CheckoutPage";
+import { AdminPage } from "@/pages/AdminPage";
+import { AdminLayout } from "@/components/AdminLayout";
 import NotFound from "@/pages/not-found";
 import type { Product, CartItem } from "@shared/schema";
 import { apiRequest } from "./lib/queryClient";
@@ -107,65 +109,77 @@ function AppContent() {
   const categoryFilter = urlParams.get("category") || "";
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header
-        cartItemCount={cartItems.length}
-        onCartClick={() => setCartOpen(true)}
-        onSearchChange={handleSearchChange}
-      />
+    <Switch>
+      {/* Admin Routes */}
+      <Route path="/admin">
+        <AdminLayout>
+          <AdminPage />
+        </AdminLayout>
+      </Route>
 
-      <main className="flex-1">
-        <Switch>
-          <Route path="/">
-            <HomePage products={products} onAddToCart={handleAddToCart} />
-          </Route>
+      {/* Customer Routes */}
+      <Route>
+        <div className="flex flex-col min-h-screen">
+          <Header
+            cartItemCount={cartItems.length}
+            onCartClick={() => setCartOpen(true)}
+            onSearchChange={handleSearchChange}
+          />
 
-          <Route path="/products">
-            <ProductListingPage
-              products={products}
-              onAddToCart={handleAddToCart}
-              searchQuery={searchQuery}
-              categoryFilter={categoryFilter}
-            />
-          </Route>
+          <main className="flex-1">
+            <Switch>
+              <Route path="/">
+                <HomePage products={products} onAddToCart={handleAddToCart} />
+              </Route>
 
-          <Route path="/products/:id">
-            {(params) => {
-              const product = products.find((p) => p.id === params.id);
-              if (!product) return <NotFound />;
-
-              const relatedProducts = products
-                .filter((p) => p.category === product.category && p.id !== product.id)
-                .slice(0, 4);
-
-              return (
-                <ProductDetailPage
-                  product={product}
-                  relatedProducts={relatedProducts}
+              <Route path="/products">
+                <ProductListingPage
+                  products={products}
                   onAddToCart={handleAddToCart}
+                  searchQuery={searchQuery}
+                  categoryFilter={categoryFilter}
                 />
-              );
-            }}
-          </Route>
+              </Route>
 
-          <Route path="/checkout">
-            <CheckoutPage cartItems={cartItems} onPlaceOrder={handlePlaceOrder} />
-          </Route>
+              <Route path="/products/:id">
+                {(params) => {
+                  const product = products.find((p) => p.id === params.id);
+                  if (!product) return <NotFound />;
 
-          <Route component={NotFound} />
-        </Switch>
-      </main>
+                  const relatedProducts = products
+                    .filter((p) => p.category === product.category && p.id !== product.id)
+                    .slice(0, 4);
 
-      <Footer />
+                  return (
+                    <ProductDetailPage
+                      product={product}
+                      relatedProducts={relatedProducts}
+                      onAddToCart={handleAddToCart}
+                    />
+                  );
+                }}
+              </Route>
 
-      <CartDrawer
-        open={cartOpen}
-        onOpenChange={setCartOpen}
-        cartItems={cartItems}
-        onUpdateQuantity={handleUpdateQuantity}
-        onRemoveItem={handleRemoveItem}
-      />
-    </div>
+              <Route path="/checkout">
+                <CheckoutPage cartItems={cartItems} onPlaceOrder={handlePlaceOrder} />
+              </Route>
+
+              <Route component={NotFound} />
+            </Switch>
+          </main>
+
+          <Footer />
+
+          <CartDrawer
+            open={cartOpen}
+            onOpenChange={setCartOpen}
+            cartItems={cartItems}
+            onUpdateQuantity={handleUpdateQuantity}
+            onRemoveItem={handleRemoveItem}
+          />
+        </div>
+      </Route>
+    </Switch>
   );
 }
 

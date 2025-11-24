@@ -205,6 +205,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin routes
+  const createProductSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    description: z.string().min(1, "Description is required"),
+    price: z.number().min(0, "Price must be positive"),
+    image: z.string().min(1, "Image URL is required"),
+    category: z.enum(["food", "cosmetic"]),
+    inStock: z.boolean().default(true),
+  });
+
+  app.post("/api/admin/products", async (req, res) => {
+    try {
+      const validatedData = createProductSchema.parse(req.body);
+      const product = await storage.createProduct({
+        name: validatedData.name,
+        description: validatedData.description,
+        price: validatedData.price.toString(),
+        image: validatedData.image,
+        images: [validatedData.image],
+        category: validatedData.category,
+        inStock: validatedData.inStock,
+        rating: "4.5",
+        reviewCount: 0,
+        featured: false,
+      });
+      res.json(product);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid product data", details: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create product" });
+    }
+  });
+
+  app.put("/api/admin/products/:id", async (req, res) => {
+    try {
+      const validatedData = createProductSchema.partial().parse(req.body);
+      const updates: Record<string, any> = {};
+      
+      if (validatedData.name) updates.name = validatedData.name;
+      if (validatedData.description) updates.description = validatedData.description;
+      if (validatedData.price !== undefined) updates.price = validatedData.price.toString();
+      if (validatedData.image) {
+        updates.image = validatedData.image;
+        updates.images = [validatedData.image];
+      }
+      if (validatedData.category) updates.category = validatedData.category;
+      if (validatedData.inStock !== undefined) updates.inStock = validatedData.inStock;
+
+      const product = await storage.updateProduct(req.params.id, updates);
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      res.json(product);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid product data", details: error.errors });
+      }
+      res.status(500).json({ error: "Failed to update product" });
+    }
+  });
+
+  app.delete("/api/admin/products/:id", async (req, res) => {
+    try {
+      const success = await storage.deleteProduct(req.params.id);
+      if (!success) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete product" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

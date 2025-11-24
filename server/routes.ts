@@ -104,21 +104,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/cart/:itemId", async (req, res) => {
     try {
+      const validatedData = updateQuantitySchema.parse(req.body);
       const sessionId = getOrCreateSession(req, res);
-      const { quantity } = req.body;
-      if (typeof quantity !== "number" || quantity < 1) {
-        return res.status(400).json({ error: "Invalid quantity" });
-      }
 
       const existingItem = await storage.getCartItemById(req.params.itemId);
       if (!existingItem || existingItem.sessionId !== sessionId) {
         return res.status(404).json({ error: "Cart item not found" });
       }
 
-      const updatedItem = await storage.updateCartItemQuantity(req.params.itemId, quantity);
+      const updatedItem = await storage.updateCartItemQuantity(req.params.itemId, validatedData.quantity);
       const product = await storage.getProductById(updatedItem!.productId);
       res.json({ ...updatedItem, product });
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid quantity", details: error.errors });
+      }
       res.status(500).json({ error: "Failed to update cart item" });
     }
   });

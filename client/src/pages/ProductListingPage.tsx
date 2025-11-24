@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -13,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal, Search, X } from "lucide-react";
 import type { Product } from "@shared/schema";
 
 interface ProductListingPageProps {
@@ -34,6 +35,7 @@ export function ProductListingPage({
   );
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
   const [sortBy, setSortBy] = useState("featured");
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
   const categories = Array.from(new Set(products.map((p) => p.category)));
   const maxPrice = Math.max(...products.map((p) => parseFloat(p.price)));
@@ -41,8 +43,11 @@ export function ProductListingPage({
   const filteredProducts = useMemo(() => {
     let filtered = products;
 
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
+    // Use local search query if available, otherwise use passed search query
+    const activeSearchQuery = localSearchQuery || searchQuery;
+    
+    if (activeSearchQuery) {
+      const query = activeSearchQuery.toLowerCase();
       filtered = filtered.filter(
         (p) =>
           p.name.toLowerCase().includes(query) ||
@@ -76,7 +81,7 @@ export function ProductListingPage({
     }
 
     return sorted;
-  }, [products, searchQuery, selectedCategories, priceRange, sortBy]);
+  }, [products, searchQuery, localSearchQuery, selectedCategories, priceRange, sortBy]);
 
   const toggleCategory = (category: string) => {
     setSelectedCategories((prev) =>
@@ -86,10 +91,16 @@ export function ProductListingPage({
     );
   };
 
+  const handleClearSearch = () => {
+    setLocalSearchQuery("");
+  };
+
+  const hasActiveFilters = localSearchQuery || selectedCategories.length > 0 || priceRange[1] < maxPrice;
+
   const FilterContent = () => (
     <div className="space-y-6">
       <div>
-        <h3 className="font-semibold mb-4">Categories</h3>
+        <h3 className="font-semibold mb-4 text-foreground">Categories</h3>
         <div className="space-y-3">
           {categories.map((category) => (
             <div key={category} className="flex items-center space-x-2">
@@ -101,7 +112,7 @@ export function ProductListingPage({
               />
               <Label
                 htmlFor={`category-${category}`}
-                className="text-sm font-normal cursor-pointer"
+                className="text-sm font-normal cursor-pointer text-foreground"
               >
                 {category}
               </Label>
@@ -111,7 +122,7 @@ export function ProductListingPage({
       </div>
 
       <div>
-        <h3 className="font-semibold mb-4">Price Range</h3>
+        <h3 className="font-semibold mb-4 text-foreground">Price Range</h3>
         <div className="space-y-4">
           <Slider
             min={0}
@@ -121,37 +132,68 @@ export function ProductListingPage({
             onValueChange={(value) => setPriceRange(value as [number, number])}
             data-testid="slider-price-range"
           />
-          <div className="flex items-center justify-between text-sm">
-            <span data-testid="text-min-price">${priceRange[0]}</span>
-            <span data-testid="text-max-price">${priceRange[1]}</span>
+          <div className="flex items-center justify-between text-sm text-foreground font-medium">
+            <span data-testid="text-min-price">${priceRange[0].toFixed(0)}</span>
+            <span data-testid="text-max-price">${priceRange[1].toFixed(0)}</span>
           </div>
         </div>
       </div>
 
-      <Button
-        variant="outline"
-        className="w-full hover-elevate"
-        onClick={() => {
-          setSelectedCategories([]);
-          setPriceRange([0, maxPrice]);
-        }}
-        data-testid="button-clear-filters"
-      >
-        Clear Filters
-      </Button>
+      {hasActiveFilters && (
+        <Button
+          variant="outline"
+          className="w-full hover-elevate"
+          onClick={() => {
+            setLocalSearchQuery("");
+            setSelectedCategories([]);
+            setPriceRange([0, maxPrice]);
+          }}
+          data-testid="button-clear-filters"
+        >
+          Clear All Filters
+        </Button>
+      )}
     </div>
   );
+
+  const activeSearch = localSearchQuery || searchQuery;
 
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <h1 className="font-serif text-4xl font-bold mb-2" data-testid="text-page-title">
-            {searchQuery ? `Search results for "${searchQuery}"` : "All Products"}
+        {/* Page Header */}
+        <div className="mb-10">
+          <h1 className="font-serif text-4xl font-bold mb-2 text-foreground" data-testid="text-page-title">
+            {activeSearch ? `Search results for "${activeSearch}"` : "All Products"}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-lg">
             {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"} found
           </p>
+        </div>
+
+        {/* Main Search Bar */}
+        <div className="mb-8">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
+            <Input
+              type="search"
+              placeholder="Search by product name or description..."
+              value={localSearchQuery}
+              onChange={(e) => setLocalSearchQuery(e.target.value)}
+              className="pl-12 pr-10 py-6 text-base rounded-lg border-2 focus-visible:ring-2 focus-visible:ring-primary"
+              data-testid="input-product-search"
+            />
+            {localSearchQuery && (
+              <button
+                onClick={handleClearSearch}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                data-testid="button-clear-search"
+                aria-label="Clear search"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="flex gap-8">
@@ -165,16 +207,22 @@ export function ProductListingPage({
 
           {/* Main Content */}
           <div className="flex-1">
-            <div className="flex items-center justify-between mb-6">
-              {/* Mobile Filters */}
+            {/* Controls Bar */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 p-4 bg-card rounded-lg border">
+              {/* Mobile & Tablet Filters Button */}
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="outline" className="lg:hidden hover-elevate" data-testid="button-open-filters">
+                  <Button 
+                    variant="outline" 
+                    className="lg:hidden hover-elevate w-full sm:w-auto" 
+                    data-testid="button-open-filters"
+                  >
                     <SlidersHorizontal className="h-4 w-4 mr-2" />
                     Filters
+                    {hasActiveFilters && <span className="ml-2 text-xs font-bold bg-primary text-primary-foreground px-2 py-1 rounded-full">Active</span>}
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="left">
+                <SheetContent side="left" className="w-80">
                   <SheetHeader>
                     <SheetTitle>Filters</SheetTitle>
                   </SheetHeader>
@@ -184,18 +232,21 @@ export function ProductListingPage({
                 </SheetContent>
               </Sheet>
 
-              {/* Sort */}
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-48" data-testid="select-sort">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="featured">Featured</SelectItem>
-                  <SelectItem value="price-low">Price: Low to High</SelectItem>
-                  <SelectItem value="price-high">Price: High to Low</SelectItem>
-                  <SelectItem value="rating">Highest Rated</SelectItem>
-                </SelectContent>
-              </Select>
+              {/* Sort Dropdown */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground font-medium hidden sm:inline">Sort by:</span>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-full sm:w-56" data-testid="select-sort">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="featured">Featured</SelectItem>
+                    <SelectItem value="price-low">Price: Low to High</SelectItem>
+                    <SelectItem value="price-high">Price: High to Low</SelectItem>
+                    <SelectItem value="rating">Highest Rated</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {filteredProducts.length === 0 ? (

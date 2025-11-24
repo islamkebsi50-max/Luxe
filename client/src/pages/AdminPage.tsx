@@ -27,6 +27,7 @@ export function AdminPage() {
     image: "",
     category: "food" as "food" | "cosmetic",
     inStock: true,
+    tags: "" as string, // comma-separated tags
   });
 
   // Fetch products
@@ -37,9 +38,14 @@ export function AdminPage() {
   // Create product mutation
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
+      const tags = data.tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0);
       return await apiRequest("POST", "/api/admin/products", {
         ...data,
         price: parseFloat(data.price),
+        tags,
       });
     },
     onSuccess: () => {
@@ -63,9 +69,14 @@ export function AdminPage() {
   // Update product mutation
   const updateMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
+      const tags = data.tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0);
       return await apiRequest("PUT", `/api/admin/products/${editingId}`, {
         ...data,
         price: parseFloat(data.price),
+        tags,
       });
     },
     onSuccess: () => {
@@ -115,6 +126,7 @@ export function AdminPage() {
       image: "",
       category: "food",
       inStock: true,
+      tags: "",
     });
   };
 
@@ -126,6 +138,7 @@ export function AdminPage() {
       image: product.image,
       category: product.category.toLowerCase() as "food" | "cosmetic",
       inStock: product.inStock,
+      tags: (product.tags || []).join(", "),
     });
     setEditingId(product.id);
     setShowAddForm(false);
@@ -278,6 +291,16 @@ export function AdminPage() {
                     <SelectItem value="cosmetic">Cosmetics</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Tags (comma-separated)</label>
+                <Input
+                  placeholder="e.g., Organic, Vegan, Sugar-Free"
+                  value={formData.tags}
+                  onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                  data-testid="input-product-tags"
+                />
               </div>
 
               <div className="flex items-center gap-2">

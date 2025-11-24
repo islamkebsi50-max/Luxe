@@ -47,6 +47,21 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
               -{discountPercent}%
             </Badge>
           )}
+          
+          {/* Tags Badges */}
+          {product.tags && product.tags.length > 0 && (
+            <div className="absolute bottom-4 left-4 right-4 flex flex-wrap gap-2">
+              {product.tags.map((tag, index) => (
+                <Badge
+                  key={`${product.id}-tag-${index}`}
+                  className="bg-blue-500 text-white text-xs px-2 py-1 truncate"
+                  data-testid={`badge-tag-${product.id}-${index}`}
+                >
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
       </Link>
 

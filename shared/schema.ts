@@ -16,6 +16,7 @@ export const products = pgTable("products", {
   reviewCount: integer("review_count").notNull().default(0),
   inStock: boolean("in_stock").notNull().default(true),
   featured: boolean("featured").notNull().default(false),
+  tags: text("tags").array().notNull().default(sql`ARRAY[]::text[]`),
 });
 
 export const insertProductSchema = createInsertSchema(products).omit({

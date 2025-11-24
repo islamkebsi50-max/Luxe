@@ -25,6 +25,7 @@ export function AdminPage() {
     description: "",
     price: "",
     image: "",
+    images: ["", "", "", ""] as string[], // up to 4 additional images
     category: "food" as "food" | "cosmetic",
     inStock: true,
     tags: "" as string, // comma-separated tags
@@ -42,8 +43,11 @@ export function AdminPage() {
         .split(",")
         .map((tag) => tag.trim())
         .filter((tag) => tag.length > 0);
+      // Combine primary image with additional images
+      const allImages = [data.image, ...data.images.filter((img) => img.trim())];
       return await apiRequest("POST", "/api/admin/products", {
         ...data,
+        images: allImages,
         price: parseFloat(data.price),
         tags,
       });
@@ -73,8 +77,11 @@ export function AdminPage() {
         .split(",")
         .map((tag) => tag.trim())
         .filter((tag) => tag.length > 0);
+      // Combine primary image with additional images
+      const allImages = [data.image, ...data.images.filter((img) => img.trim())];
       return await apiRequest("PUT", `/api/admin/products/${editingId}`, {
         ...data,
+        images: allImages,
         price: parseFloat(data.price),
         tags,
       });
@@ -124,6 +131,7 @@ export function AdminPage() {
       description: "",
       price: "",
       image: "",
+      images: ["", "", "", ""],
       category: "food",
       inStock: true,
       tags: "",
@@ -131,11 +139,16 @@ export function AdminPage() {
   };
 
   const handleEdit = (product: Product) => {
+    // First image is primary, rest are additional
+    const [primary, ...additional] = product.images || [product.image];
+    const additionalImages = [...additional, ...Array(4 - additional.length).fill("")].slice(0, 4);
+    
     setFormData({
       name: product.name,
       description: product.description,
       price: product.price,
-      image: product.image,
+      image: primary || product.image,
+      images: additionalImages,
       category: product.category.toLowerCase() as "food" | "cosmetic",
       inStock: product.inStock,
       tags: (product.tags || []).join(", "),
@@ -265,14 +278,31 @@ export function AdminPage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium">Image URL *</label>
-                <Input
-                  type="url"
-                  placeholder="https://images.unsplash.com/..."
-                  value={formData.image}
-                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  data-testid="input-product-image"
-                />
+                <label className="text-sm font-medium">Image URLs (up to 4) *</label>
+                <div className="space-y-2">
+                  <Input
+                    type="url"
+                    placeholder="Main image (required) https://..."
+                    value={formData.image}
+                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                    data-testid="input-product-image"
+                  />
+                  {formData.images.map((img, idx) => (
+                    <Input
+                      key={idx}
+                      type="url"
+                      placeholder={`Additional image ${idx + 1} (optional) https://...`}
+                      value={img}
+                      onChange={(e) => {
+                        const newImages = [...formData.images];
+                        newImages[idx] = e.target.value;
+                        setFormData({ ...formData, images: newImages });
+                      }}
+                      data-testid={`input-product-image-${idx + 2}`}
+                    />
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">You can add up to 4 images total. At least the main image is required.</p>
               </div>
 
               <div>

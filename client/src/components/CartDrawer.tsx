@@ -29,21 +29,35 @@ export function CartDrawer({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-lg flex flex-col" data-testid="drawer-cart">
-        <SheetHeader>
-          <SheetTitle className="text-2xl font-serif">Shopping Cart</SheetTitle>
+      <SheetContent className="w-full sm:max-w-md flex flex-col bg-background" data-testid="drawer-cart">
+        <SheetHeader className="pb-4">
+          <div className="flex items-center gap-3">
+            <ShoppingBag className="h-6 w-6" />
+            <SheetTitle className="text-2xl font-serif">Shopping Cart</SheetTitle>
+            {cartItems.length > 0 && (
+              <span className="ml-auto bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
+                {cartItems.reduce((sum, item) => sum + item.quantity, 0)} items
+              </span>
+            )}
+          </div>
         </SheetHeader>
 
         {cartItems.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center px-4">
-            <ShoppingBag className="h-16 w-16 text-muted-foreground" />
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+              <ShoppingBag className="h-8 w-8 text-muted-foreground" />
+            </div>
             <div>
-              <h3 className="text-lg font-semibold mb-2">Your cart is empty</h3>
+              <h3 className="text-lg font-semibold mb-2 text-foreground">Your cart is empty</h3>
               <p className="text-sm text-muted-foreground mb-6">
                 Add some products to get started!
               </p>
               <Link href="/products">
-                <Button onClick={() => onOpenChange(false)} data-testid="button-continue-shopping">
+                <Button 
+                  onClick={() => onOpenChange(false)} 
+                  className="bg-primary hover:bg-primary/90"
+                  data-testid="button-continue-shopping"
+                >
                   Continue Shopping
                 </Button>
               </Link>
@@ -51,103 +65,123 @@ export function CartDrawer({
           </div>
         ) : (
           <>
-            <div className="flex-1 overflow-auto py-6">
-              <div className="space-y-4">
-                {cartItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex gap-4 p-4 rounded-md border hover-elevate"
-                    data-testid={`cart-item-${item.id}`}
-                  >
-                    <div className="w-20 h-20 rounded-md overflow-hidden bg-muted flex-shrink-0">
-                      <img
-                        src={item.product.image}
-                        alt={item.product.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-sm mb-1 truncate" data-testid={`text-cart-item-name-${item.id}`}>
-                        {item.product.name}
-                      </h4>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        ${item.product.price}
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-7 w-7"
-                          onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                          data-testid={`button-decrease-${item.id}`}
-                        >
-                          <Minus className="h-3 w-3" />
-                        </Button>
-                        <span className="w-8 text-center font-medium" data-testid={`text-quantity-${item.id}`}>
-                          {item.quantity}
-                        </span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-7 w-7"
-                          onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                          data-testid={`button-increase-${item.id}`}
-                        >
-                          <Plus className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end justify-between">
+            {/* Cart Items Scrollable Area */}
+            <div className="flex-1 overflow-y-auto py-6 border-t space-y-3 pr-2">
+              {cartItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex gap-4 p-4 rounded-lg border bg-card hover:bg-card/80 transition-colors"
+                  data-testid={`cart-item-${item.id}`}
+                >
+                  {/* Product Image */}
+                  <div className="w-20 h-20 rounded-lg overflow-hidden bg-muted flex-shrink-0 border">
+                    <img
+                      src={item.product.image}
+                      alt={item.product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Product Details */}
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-sm mb-1 truncate text-foreground" data-testid={`text-cart-item-name-${item.id}`}>
+                      {item.product.name}
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-2">
+                      ${parseFloat(item.product.price).toFixed(2)}
+                    </p>
+
+                    {/* Quantity Controls */}
+                    <div className="flex items-center gap-1 bg-muted rounded-md w-fit p-1">
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8"
-                        onClick={() => onRemoveItem(item.id)}
-                        data-testid={`button-remove-${item.id}`}
+                        className="h-6 w-6 hover:bg-background"
+                        onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                        data-testid={`button-decrease-${item.id}`}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Minus className="h-3 w-3" />
                       </Button>
-                      <span className="font-bold" data-testid={`text-item-total-${item.id}`}>
-                        ${(parseFloat(item.product.price) * item.quantity).toFixed(2)}
+                      <span className="w-6 text-center text-sm font-semibold" data-testid={`text-quantity-${item.id}`}>
+                        {item.quantity}
                       </span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 hover:bg-background"
+                        onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                        data-testid={`button-increase-${item.id}`}
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
                     </div>
                   </div>
-                ))}
-              </div>
+
+                  {/* Price and Remove */}
+                  <div className="flex flex-col items-end justify-between">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                      onClick={() => onRemoveItem(item.id)}
+                      data-testid={`button-remove-${item.id}`}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                    <span className="font-bold text-sm text-foreground" data-testid={`text-item-total-${item.id}`}>
+                      ${(parseFloat(item.product.price) * item.quantity).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <div className="border-t pt-6 space-y-4">
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
+            {/* Order Summary - Sticky Bottom */}
+            <div className="border-t bg-background pt-6 space-y-4">
+              {/* Pricing Breakdown */}
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span data-testid="text-subtotal">${subtotal.toFixed(2)}</span>
+                  <span className="font-medium" data-testid="text-subtotal">${subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between">
                   <span className="text-muted-foreground">Shipping</span>
-                  <span data-testid="text-shipping">
+                  <span className={`font-medium ${shipping === 0 ? "text-green-600" : ""}`} data-testid="text-shipping">
                     {shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
                   </span>
                 </div>
                 {subtotal > 0 && subtotal < 100 && (
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-amber-600 bg-amber-50 dark:bg-amber-900/20 p-2 rounded">
                     Add ${(100 - subtotal).toFixed(2)} more for free shipping!
                   </p>
                 )}
-                <Separator />
-                <div className="flex justify-between font-bold text-lg">
-                  <span>Total</span>
-                  <span data-testid="text-total">${total.toFixed(2)}</span>
+                <Separator className="my-2" />
+                <div className="flex justify-between font-bold text-base">
+                  <span className="text-foreground">Total</span>
+                  <span className="text-primary text-lg" data-testid="text-total">${total.toFixed(2)}</span>
                 </div>
               </div>
 
-              <Link href="/checkout">
+              {/* Checkout Button */}
+              <Link href="/checkout" className="block">
                 <Button
-                  className="w-full"
-                  size="lg"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-6 text-base active-elevate-2"
                   onClick={() => onOpenChange(false)}
                   data-testid="button-checkout"
                 >
                   Proceed to Checkout
+                </Button>
+              </Link>
+
+              {/* Continue Shopping */}
+              <Link href="/products" className="block">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => onOpenChange(false)}
+                  data-testid="button-continue-shopping-drawer"
+                >
+                  Continue Shopping
                 </Button>
               </Link>
             </div>

@@ -1,15 +1,210 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { insertCartItemSchema, insertOrderSchema } from "@shared/schema";
+import { z } from "zod";
+import { randomUUID } from "crypto";
+
+const addToCartSchema = z.object({
+  productId: z.string().min(1, "Product ID is required"),
+  quantity: z.number().int().min(1, "Quantity must be at least 1").max(99, "Quantity cannot exceed 99"),
+});
+
+const updateQuantitySchema = z.object({
+  quantity: z.number().int().min(1, "Quantity must be at least 1").max(99, "Quantity cannot exceed 99"),
+});
+
+function getOrCreateSession(req: Request, res: Response): string {
+  let sessionId = req.cookies?.sessionId;
+  
+  if (!sessionId) {
+    sessionId = randomUUID();
+    res.cookie("sessionId", sessionId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+  }
+  
+  return sessionId;
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
+  // Products
+  app.get("/api/products", async (_req, res) => {
+    try {
+      const products = await storage.getAllProducts();
+      res.json(products);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch products" });
+    }
+  });
 
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+  app.get("/api/products/:id", async (req, res) => {
+    try {
+      const product = await storage.getProductById(req.params.id);
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      res.json(product);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch product" });
+    }
+  });
+
+  // Cart
+  app.get("/api/cart", async (req, res) => {
+    try {
+      const sessionId = getOrCreateSession(req, res);
+      const cartItems = await storage.getCartBySessionId(sessionId);
+      const itemsWithProducts = await Promise.all(
+        cartItems.map(async (item) => {
+          const product = await storage.getProductById(item.productId);
+          return { ...item, product };
+        })
+      );
+      res.json(itemsWithProducts);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch cart" });
+    }
+  });
+
+  app.post("/api/cart", async (req, res) => {
+    try {
+      const validatedData = addToCartSchema.parse(req.body);
+      const sessionId = getOrCreateSession(req, res);
+      const { productId, quantity } = validatedData;
+      
+      const product = await storage.getProductById(productId);
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      if (!product.inStock) {
+        return res.status(400).json({ error: "Product is out of stock" });
+      }
+
+      const currentCart = await storage.getCartBySessionId(sessionId);
+      const existingCartItem = currentCart.find(item => item.productId === productId);
+      const totalQuantity = existingCartItem ? existingCartItem.quantity + quantity : quantity;
+
+      if (totalQuantity > 99) {
+        return res.status(400).json({ error: "Cannot add more than 99 items of the same product" });
+      }
+      
+      const cartItem = await storage.addToCart({ sessionId, productId, quantity });
+      res.json({ ...cartItem, product });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid cart item data", details: error.errors });
+      }
+      res.status(500).json({ error: "Failed to add to cart" });
+    }
+  });
+
+  app.patch("/api/cart/:itemId", async (req, res) => {
+    try {
+      const sessionId = getOrCreateSession(req, res);
+      const { quantity } = req.body;
+      if (typeof quantity !== "number" || quantity < 1) {
+        return res.status(400).json({ error: "Invalid quantity" });
+      }
+
+      const existingItem = await storage.getCartItemById(req.params.itemId);
+      if (!existingItem || existingItem.sessionId !== sessionId) {
+        return res.status(404).json({ error: "Cart item not found" });
+      }
+
+      const updatedItem = await storage.updateCartItemQuantity(req.params.itemId, quantity);
+      const product = await storage.getProductById(updatedItem!.productId);
+      res.json({ ...updatedItem, product });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update cart item" });
+    }
+  });
+
+  app.delete("/api/cart/:itemId", async (req, res) => {
+    try {
+      const sessionId = getOrCreateSession(req, res);
+      
+      const existingItem = await storage.getCartItemById(req.params.itemId);
+      if (!existingItem || existingItem.sessionId !== sessionId) {
+        return res.status(404).json({ error: "Cart item not found" });
+      }
+
+      const success = await storage.removeCartItem(req.params.itemId);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to remove cart item" });
+    }
+  });
+
+  // Orders
+  app.post("/api/orders", async (req, res) => {
+    try {
+      const sessionId = getOrCreateSession(req, res);
+      const { shippingName, shippingEmail, shippingAddress, shippingCity, shippingZip, shippingCountry } = req.body;
+      
+      const cartItems = await storage.getCartBySessionId(sessionId);
+      if (cartItems.length === 0) {
+        return res.status(400).json({ error: "Cart is empty" });
+      }
+
+      const itemsWithProducts = await Promise.all(
+        cartItems.map(async (item) => {
+          const product = await storage.getProductById(item.productId);
+          if (!product) {
+            throw new Error(`Product ${item.productId} not found`);
+          }
+          return {
+            productId: item.productId,
+            quantity: item.quantity,
+            price: product.price,
+            name: product.name,
+          };
+        })
+      );
+
+      const subtotal = itemsWithProducts.reduce(
+        (sum, item) => sum + parseFloat(item.price) * item.quantity,
+        0
+      );
+      const shipping = subtotal > 100 ? 0 : 10;
+      const tax = subtotal * 0.1;
+      const total = (subtotal + shipping + tax).toFixed(2);
+
+      const orderData = {
+        sessionId,
+        items: JSON.stringify(itemsWithProducts),
+        total,
+        shippingName,
+        shippingEmail,
+        shippingAddress,
+        shippingCity,
+        shippingZip,
+        shippingCountry,
+      };
+
+      const order = await storage.createOrder(orderData);
+      res.json(order);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid order data", details: error.errors });
+      }
+      res.status(500).json({ error: "Failed to create order" });
+    }
+  });
+
+  app.get("/api/orders", async (req, res) => {
+    try {
+      const sessionId = getOrCreateSession(req, res);
+      const orders = await storage.getOrdersBySessionId(sessionId);
+      res.json(orders);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch orders" });
+    }
+  });
 
   const httpServer = createServer(app);
-
   return httpServer;
 }

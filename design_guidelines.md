@@ -7,6 +7,22 @@
 1. **Product-First Philosophy**: Products are heroes - generous imagery, clear pricing, minimal distraction
 2. **Trust & Clarity**: Professional polish that builds confidence in purchasing decisions
 3. **Effortless Shopping Flow**: Reduce friction from discovery to checkout
+4. **Category-Specific Branding**: Green accents for Food products, Gold/Pink accents for Cosmetics
+
+## Color Palette
+
+### Food Category - Green
+- Primary: `#10B981` (Emerald Green)
+- Light: `#D1FAE5` (Light Green)
+- Dark: `#065F46` (Dark Green)
+- Uses: Food category badges, Food tab active state, Food product highlights
+
+### Cosmetics Category - Gold/Pink
+- Primary: `#D97706` (Amber Gold)
+- Accent: `#EC4899` (Rose Pink)
+- Light: `#FED7AA` (Light Gold)
+- Dark: `#92400E` (Dark Gold)
+- Uses: Cosmetics category badges, Cosmetics tab active state, Cosmetics product highlights
 
 ## Typography System
 
@@ -39,7 +55,7 @@
 
 ### Navigation
 - Sticky header with logo left, search center, cart/account right
-- Category mega-menu on hover with subcategories + featured products
+- Category links for Food and Cosmetics with color-coded indicators
 - Breadcrumb navigation on product/category pages
 - Mobile: Hamburger menu with slide-out drawer
 
@@ -47,8 +63,9 @@
 - Square aspect ratio image (1:1) with hover zoom effect
 - Product name, price prominently displayed
 - Quick add to cart button on hover (desktop)
-- Sale badge positioned top-right on image
+- Category-colored badge based on product type
 - Rating stars below title
+- Color-coded borders based on category
 
 ### Shopping Cart
 - Slide-out drawer from right (desktop), full-page (mobile)
@@ -65,7 +82,7 @@
 - "You May Also Like" carousel below
 
 ### Search & Filters
-- Sidebar filters (category, price range, size, brand) on desktop
+- Sidebar filters (category, price range) on desktop
 - Bottom sheet filters on mobile
 - Active filters displayed as dismissible tags
 - Sort dropdown: Featured, Price Low-High, Price High-Low, Newest
@@ -109,6 +126,7 @@
 - Smooth cart drawer slide animation
 - Quantity button haptic feedback (slight scale on click)
 - Form field focus states with border accent
+- Category tab smooth transitions
 
 **Loading States**:
 - Skeleton screens for product grids
@@ -124,7 +142,7 @@
 
 ## Key Pages Structure
 
-**Homepage**: Hero carousel → Featured collections (2-column) → Category grid (4-column) → Bestsellers carousel → Newsletter signup → Footer
+**Homepage**: Category toggle (Food/Cosmetics) → Product grid filtered by category → Featured collections → Newsletter signup → Footer
 
 **Product Listing**: Breadcrumb → Filters sidebar + Product grid (4-column) → Load more/pagination
 

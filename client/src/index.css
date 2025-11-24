@@ -43,6 +43,13 @@
   --chart-3: 142 76% 36%;
   --chart-4: 47 96% 48%;
   --chart-5: 340 75% 55%;
+  --food-primary: 160 84% 39%;
+  --food-light: 152 72% 81%;
+  --food-dark: 162 73% 22%;
+  --cosmetic-primary: 38 92% 50%;
+  --cosmetic-accent: 334 85% 57%;
+  --cosmetic-light: 33 100% 74%;
+  --cosmetic-dark: 32 79% 31%;
   --font-sans: Open Sans, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;

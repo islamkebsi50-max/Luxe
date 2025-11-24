@@ -16,8 +16,16 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
     ? Math.round(((parseFloat(product.originalPrice!) - parseFloat(product.price)) / parseFloat(product.originalPrice!)) * 100)
     : 0;
 
+  const isFoodCategory = product.category.toLowerCase() === "food";
+  const categoryColor = isFoodCategory 
+    ? "border-l-4 border-l-green-500" 
+    : "border-l-4 border-l-amber-500";
+  const badgeColor = isFoodCategory
+    ? "bg-green-100 text-green-800"
+    : "bg-amber-100 text-amber-800";
+
   return (
-    <Card className="group overflow-hidden hover-elevate" data-testid={`card-product-${product.id}`}>
+    <Card className={`group overflow-hidden hover-elevate ${categoryColor}`} data-testid={`card-product-${product.id}`}>
       <Link href={`/products/${product.id}`}>
         <div className="relative aspect-square overflow-hidden bg-muted">
           <img
@@ -41,7 +49,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
       <div className="p-4 space-y-3">
         <Link href={`/products/${product.id}`}>
           <div>
-            <p className="text-sm text-muted-foreground mb-1">{product.category}</p>
+            <p className={`text-xs font-semibold mb-1 px-2 py-1 rounded w-fit ${badgeColor}`}>{product.category}</p>
             <h3 className="font-semibold text-lg leading-tight hover:text-primary transition-colors" data-testid={`text-product-name-${product.id}`}>
               {product.name}
             </h3>

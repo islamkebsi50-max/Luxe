@@ -16,7 +16,8 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
 
   const navLinks = [
     { label: "Home", href: "/" },
-    { label: "Shop", href: "/products" },
+    { label: "Food", href: "/products?category=food" },
+    { label: "Cosmetics", href: "/products?category=cosmetic" },
   ];
 
   return (

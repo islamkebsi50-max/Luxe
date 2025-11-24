@@ -15,6 +15,7 @@ interface HomePageProps {
 
 export function HomePage({ products, onAddToCart }: HomePageProps) {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState<"food" | "cosmetic">("food");
   const heroImages = [heroImage1, heroImage2];
 
   useEffect(() => {
@@ -24,13 +25,19 @@ export function HomePage({ products, onAddToCart }: HomePageProps) {
     return () => clearInterval(interval);
   }, [heroImages.length]);
 
-  const featuredProducts = products.filter((p) => p.featured).slice(0, 4);
-  const categories = [
-    { name: "Electronics", count: products.filter((p) => p.category === "Electronics").length },
-    { name: "Accessories", count: products.filter((p) => p.category === "Accessories").length },
-    { name: "Fashion", count: products.filter((p) => p.category === "Fashion").length },
-    { name: "Home & Living", count: products.filter((p) => p.category === "Home & Living").length },
-  ];
+  const foodProducts = products.filter((p) => p.category.toLowerCase() === "food");
+  const cosmeticProducts = products.filter((p) => p.category.toLowerCase() === "cosmetic");
+  const displayProducts = selectedCategory === "food" ? foodProducts : cosmeticProducts;
+
+  const isFood = selectedCategory === "food";
+  const toggleBgClass = isFood ? "bg-green-50 dark:bg-green-950" : "bg-amber-50 dark:bg-amber-950";
+  const toggleBorderClass = isFood ? "border-green-200 dark:border-green-800" : "border-amber-200 dark:border-amber-800";
+  const activeButtonClass = isFood
+    ? "bg-green-500 text-white hover:bg-green-600"
+    : "bg-amber-500 text-white hover:bg-amber-600";
+  const inactiveButtonClass = isFood
+    ? "bg-white text-green-700 border-green-300 hover:bg-green-50 dark:bg-green-950 dark:text-green-200 dark:border-green-700"
+    : "bg-white text-amber-700 border-amber-300 hover:bg-amber-50 dark:bg-amber-950 dark:text-amber-200 dark:border-amber-700";
 
   return (
     <div className="min-h-screen">
@@ -56,10 +63,12 @@ export function HomePage({ products, onAddToCart }: HomePageProps) {
         <div className="relative z-20 container mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
           <div className="max-w-2xl">
             <h1 className="font-serif text-5xl md:text-7xl font-bold text-white mb-6" data-testid="text-hero-title">
-              Elevate Your Everyday
+              {isFood ? "Fresh & Natural" : "Beautiful & Pure"}
             </h1>
             <p className="text-xl text-white/90 mb-8 leading-relaxed">
-              Discover our curated collection of premium products designed for modern living.
+              {isFood 
+                ? "Discover our curated collection of premium food products"
+                : "Explore our luxurious collection of cosmetic products"}
             </p>
             <Link href="/products">
               <Button
@@ -87,51 +96,95 @@ export function HomePage({ products, onAddToCart }: HomePageProps) {
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="py-16 bg-background">
+      {/* Category Toggle Section */}
+      <section className={`py-12 border-b transition-colors ${toggleBgClass} ${toggleBorderClass}`}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-4xl font-bold mb-12 text-center">Shop by Category</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {categories.map((category) => (
-              <Link key={category.name} href={`/products?category=${encodeURIComponent(category.name)}`}>
-                <Card className="p-8 text-center hover-elevate cursor-pointer" data-testid={`card-category-${category.name}`}>
-                  <h3 className="font-semibold text-xl mb-2">{category.name}</h3>
-                  <p className="text-sm text-muted-foreground">{category.count} products</p>
-                </Card>
-              </Link>
-            ))}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div>
+              <h2 className="font-serif text-3xl font-bold mb-2">Browse by Category</h2>
+              <p className="text-muted-foreground">
+                {isFood 
+                  ? "Explore our collection of premium food items"
+                  : "Discover our luxurious beauty and cosmetics"}
+              </p>
+            </div>
+            
+            {/* Toggle Buttons */}
+            <div className="flex gap-3 bg-white dark:bg-slate-950 p-1 rounded-lg border">
+              <Button
+                variant={selectedCategory === "food" ? "default" : "outline"}
+                className={`px-6 transition-all ${selectedCategory === "food" ? activeButtonClass : inactiveButtonClass}`}
+                onClick={() => setSelectedCategory("food")}
+                data-testid="button-toggle-food"
+              >
+                <span className="text-lg mr-2">🌿</span> Food
+              </Button>
+              <Button
+                variant={selectedCategory === "cosmetic" ? "default" : "outline"}
+                className={`px-6 transition-all ${selectedCategory === "cosmetic" ? activeButtonClass : inactiveButtonClass}`}
+                onClick={() => setSelectedCategory("cosmetic")}
+                data-testid="button-toggle-cosmetics"
+              >
+                <span className="text-lg mr-2">💄</span> Cosmetics
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Featured Products */}
-      {featuredProducts.length > 0 && (
-        <section className="py-16 bg-card">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-end mb-12">
-              <div>
-                <h2 className="font-serif text-4xl font-bold mb-2">Featured Products</h2>
-                <p className="text-muted-foreground">Handpicked selections just for you</p>
-              </div>
-              <Link href="/products">
-                <Button variant="outline" className="hover-elevate" data-testid="button-view-all">
-                  View All
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {featuredProducts.map((product) => (
+      {/* Products Grid */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {displayProducts.length > 0 ? (
+              displayProducts.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}
                   onAddToCart={onAddToCart}
                 />
-              ))}
-            </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-muted-foreground text-lg">No products available in this category</p>
+              </div>
+            )}
           </div>
-        </section>
-      )}
+        </div>
+      </section>
+
+      {/* Category Info Section */}
+      <section className={`py-16 ${isFood ? "bg-green-50 dark:bg-green-950" : "bg-amber-50 dark:bg-amber-950"}`}>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="p-8 text-center hover-elevate" data-testid="card-info-1">
+              <div className="text-4xl mb-4">{isFood ? "🥗" : "✨"}</div>
+              <h3 className="font-semibold text-xl mb-2">{isFood ? "Premium Quality" : "Luxurious Care"}</h3>
+              <p className="text-muted-foreground">
+                {isFood 
+                  ? "Hand-selected ingredients from trusted sources"
+                  : "Formulated with natural and organic ingredients"}
+              </p>
+            </Card>
+            <Card className="p-8 text-center hover-elevate" data-testid="card-info-2">
+              <div className="text-4xl mb-4">{isFood ? "🚚" : "💝"}</div>
+              <h3 className="font-semibold text-xl mb-2">Fast Delivery</h3>
+              <p className="text-muted-foreground">
+                {isFood 
+                  ? "Fresh delivery to your doorstep within 2-3 days"
+                  : "Beautifully packaged and ready for gifting"}
+              </p>
+            </Card>
+            <Card className="p-8 text-center hover-elevate" data-testid="card-info-3">
+              <div className="text-4xl mb-4">{"✔️"}</div>
+              <h3 className="font-semibold text-xl mb-2">Guaranteed Satisfaction</h3>
+              <p className="text-muted-foreground">
+                100% satisfaction guarantee or your money back
+              </p>
+            </Card>
+          </div>
+        </div>
+      </section>
 
       {/* Newsletter */}
       <section className="py-20 bg-primary text-primary-foreground">

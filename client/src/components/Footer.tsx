@@ -77,6 +77,11 @@ export function Footer() {
               <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 Terms of Service
               </a>
+              <Link href="/admin">
+                <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer font-medium" data-testid="link-admin-footer">
+                  Admin
+                </span>
+              </Link>
             </div>
           </div>
         </div>

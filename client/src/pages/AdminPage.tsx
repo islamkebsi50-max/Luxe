@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Trash2, Edit2, Plus } from "lucide-react";
+import { Trash2, Edit2, Plus, Upload, X } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import type { Product } from "@shared/schema";
 import { useLanguage } from "@/lib/LanguageContext";
@@ -17,6 +17,71 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+function ImageUploadCard({
+  imagePreview,
+  onImageSelect,
+  label,
+}: {
+  imagePreview: string | null;
+  onImageSelect: (file: File) => void;
+  label: string;
+}) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      onImageSelect(file);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const preview = event.target?.result as string;
+        const input = fileInputRef.current;
+        if (input) {
+          input.dataset.preview = preview;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <div className="relative">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        className="hidden"
+        data-testid={`input-${label}`}
+      />
+      <button
+        type="button"
+        onClick={() => fileInputRef.current?.click()}
+        className="w-full border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 hover:bg-gray-50 transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer relative overflow-hidden group"
+      >
+        {imagePreview ? (
+          <>
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <Upload className="w-8 h-8 text-white" />
+            </div>
+          </>
+        ) : (
+          <>
+            <Upload className="w-8 h-8 text-gray-400" />
+            <div className="text-sm font-medium text-gray-600">{label}</div>
+            <div className="text-xs text-gray-500">اضغط لاختيار صورة</div>
+          </>
+        )}
+      </button>
+    </div>
+  );
+}
 
 export function AdminPage() {
   const { toast } = useToast();
@@ -34,6 +99,8 @@ export function AdminPage() {
     inStock: true,
     tags: "" as string, // comma-separated tags
   });
+
+  const [imagePreviews, setImagePreviews] = useState<(string | null)[]>([null, null, null, null, null]);
 
 
   // Fetch products
@@ -141,6 +208,48 @@ export function AdminPage() {
       inStock: true,
       tags: "",
     });
+    setImagePreviews([null, null, null, null, null]);
+  };
+
+  const handleImageFileSelect = (file: File, index: number) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const preview = event.target?.result as string;
+      setImagePreviews((prev) => {
+        const newPreviews = [...prev];
+        newPreviews[index] = preview;
+        return newPreviews;
+      });
+
+      if (index === 0) {
+        setFormData((prev) => ({ ...prev, image: preview }));
+      } else {
+        setFormData((prev) => {
+          const newImages = [...prev.images];
+          newImages[index - 1] = preview;
+          return { ...prev, images: newImages };
+        });
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const clearImagePreview = (index: number) => {
+    setImagePreviews((prev) => {
+      const newPreviews = [...prev];
+      newPreviews[index] = null;
+      return newPreviews;
+    });
+
+    if (index === 0) {
+      setFormData((prev) => ({ ...prev, image: "" }));
+    } else {
+      setFormData((prev) => {
+        const newImages = [...prev.images];
+        newImages[index - 1] = "";
+        return { ...prev, images: newImages };
+      });
+    }
   };
 
   const handleEdit = (product: Product) => {
@@ -292,31 +401,49 @@ export function AdminPage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium">{t.imageUrls} *</label>
-                <div className="space-y-2">
-                  <Input
-                    type="url"
-                    placeholder={`${t.mainImage} https://...`}
-                    value={formData.image}
-                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    data-testid="input-product-image"
-                  />
-                  {formData.images.map((img, idx) => (
-                    <Input
-                      key={idx}
-                      type="url"
-                      placeholder={`${t.additionalImage} ${idx + 1} (optional) https://...`}
-                      value={img}
-                      onChange={(e) => {
-                        const newImages = [...formData.images];
-                        newImages[idx] = e.target.value;
-                        setFormData({ ...formData, images: newImages });
-                      }}
-                      data-testid={`input-product-image-${idx + 2}`}
+                <label className="text-sm font-medium mb-3 block">{t.imageUrls} *</label>
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Main image */}
+                  <div className="relative">
+                    <ImageUploadCard
+                      imagePreview={imagePreviews[0]}
+                      onImageSelect={(file) => handleImageFileSelect(file, 0)}
+                      label={t.mainImage}
                     />
+                    {imagePreviews[0] && (
+                      <button
+                        type="button"
+                        onClick={() => clearImagePreview(0)}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 hover:opacity-100 transition-opacity"
+                        data-testid="button-clear-image-0"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Additional images */}
+                  {formData.images.map((_, idx) => (
+                    <div key={idx} className="relative">
+                      <ImageUploadCard
+                        imagePreview={imagePreviews[idx + 1]}
+                        onImageSelect={(file) => handleImageFileSelect(file, idx + 1)}
+                        label={`${t.additionalImage} ${idx + 1}`}
+                      />
+                      {imagePreviews[idx + 1] && (
+                        <button
+                          type="button"
+                          onClick={() => clearImagePreview(idx + 1)}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 hover:opacity-100 transition-opacity"
+                          data-testid={`button-clear-image-${idx + 1}`}
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
                   ))}
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">{t.imageHint}</p>
+                <p className="text-xs text-muted-foreground mt-3">{t.imageHint}</p>
               </div>
 
               <div>

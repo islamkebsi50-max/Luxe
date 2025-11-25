@@ -35,6 +35,54 @@ export function AdminPage() {
     tags: "" as string, // comma-separated tags
   });
 
+  const [uploadingImages, setUploadingImages] = useState(false);
+
+  const handleImageUpload = async (files: FileList | null, imageIndex: number) => {
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    setUploadingImages(true);
+
+    try {
+      const formDataForUpload = new FormData();
+      formDataForUpload.append("image", file);
+
+      const response = await fetch("/api/admin/upload-image", {
+        method: "POST",
+        body: formDataForUpload,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload image");
+      }
+
+      const { url } = await response.json();
+
+      if (imageIndex === 0) {
+        setFormData((prev) => ({ ...prev, image: url }));
+      } else {
+        setFormData((prev) => {
+          const newImages = [...prev.images];
+          newImages[imageIndex - 1] = url;
+          return { ...prev, images: newImages };
+        });
+      }
+
+      toast({
+        title: "Success",
+        description: "Image uploaded successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to upload image",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingImages(false);
+    }
+  };
+
   // Fetch products
   const { data: products = [] } = useQuery<Product[]>({
     queryKey: ["/api/products"],
@@ -293,29 +341,42 @@ export function AdminPage() {
               <div>
                 <label className="text-sm font-medium">{t.imageUrls} *</label>
                 <div className="space-y-2">
-                  <Input
-                    type="url"
-                    placeholder={`${t.mainImage} https://...`}
-                    value={formData.image}
-                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    data-testid="input-product-image"
-                  />
-                  {formData.images.map((img, idx) => (
-                    <Input
-                      key={idx}
-                      type="url"
-                      placeholder={`${t.additionalImage} ${idx + 1} (optional) https://...`}
-                      value={img}
-                      onChange={(e) => {
-                        const newImages = [...formData.images];
-                        newImages[idx] = e.target.value;
-                        setFormData({ ...formData, images: newImages });
-                      }}
-                      data-testid={`input-product-image-${idx + 2}`}
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e.target.files, 0)}
+                      disabled={uploadingImages}
+                      className="w-full px-3 py-2 border rounded-md text-sm cursor-pointer"
+                      data-testid="input-product-image-file"
                     />
+                    {formData.image && (
+                      <div className="mt-2 text-xs text-green-600">
+                        ✓ {t.mainImage} uploaded
+                      </div>
+                    )}
+                  </div>
+                  {formData.images.map((img, idx) => (
+                    <div key={idx} className="relative">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageUpload(e.target.files, idx + 1)}
+                        disabled={uploadingImages}
+                        className="w-full px-3 py-2 border rounded-md text-sm cursor-pointer"
+                        data-testid={`input-product-image-file-${idx + 2}`}
+                      />
+                      {img && (
+                        <div className="text-xs text-green-600">
+                          ✓ {t.additionalImage} {idx + 1} uploaded
+                        </div>
+                      )}
+                    </div>
                   ))}
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">{t.imageHint}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {uploadingImages ? "Uploading..." : t.imageHint}
+                </p>
               </div>
 
               <div>

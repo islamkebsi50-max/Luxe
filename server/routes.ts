@@ -5,6 +5,10 @@ import { insertCartItemSchema, insertOrderSchema } from "@shared/schema";
 import { z } from "zod";
 import { randomUUID } from "crypto";
 import { MemoryStorage } from "./memoryStorage";
+import multer from "multer";
+import { uploadImageToImgbb } from "./imageUpload";
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 let storage: IStorage;
 
@@ -302,18 +306,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Image upload endpoint
-  app.post("/api/admin/upload-image", async (req, res) => {
+  // Image upload endpoint - file upload
+  app.post("/api/admin/upload-image", upload.single("image"), async (req, res) => {
     try {
-      const { imageUrl } = req.body;
-      if (!imageUrl) {
-        return res.status(400).json({ error: "Image URL is required" });
+      if (!req.file) {
+        return res.status(400).json({ error: "No image file provided" });
       }
 
-      const { uploadImageFromUrl } = await import("./imageUpload");
-      const uploadedUrl = await uploadImageFromUrl(imageUrl);
+      const fileName = `product-${Date.now()}-${req.file.originalname}`;
+      const uploadedUrl = await uploadImageToImgbb(req.file.buffer, fileName);
       res.json({ url: uploadedUrl });
     } catch (error) {
+      console.error("Image upload error:", error);
       res.status(500).json({ error: "Failed to upload image" });
     }
   });

@@ -22,10 +22,12 @@ function ImageUploadCard({
   imagePreview,
   onImageSelect,
   label,
+  subtitle,
 }: {
   imagePreview: string | null;
   onImageSelect: (file: File) => void;
   label: string;
+  subtitle: string;
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -58,7 +60,7 @@ function ImageUploadCard({
       <button
         type="button"
         onClick={() => fileInputRef.current?.click()}
-        className="w-full border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 hover:bg-gray-50 transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer relative overflow-hidden group"
+        className="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-gray-400 hover:bg-gray-50 transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer relative overflow-hidden group min-h-[160px]"
       >
         {imagePreview ? (
           <>
@@ -74,8 +76,8 @@ function ImageUploadCard({
         ) : (
           <>
             <Upload className="w-8 h-8 text-gray-400" />
-            <div className="text-sm font-medium text-gray-600">{label}</div>
-            <div className="text-xs text-gray-500">اضغط لاختيار صورة</div>
+            <div className="text-sm font-bold text-gray-700">{label}</div>
+            <div className="text-xs text-gray-500">{subtitle}</div>
           </>
         )}
       </button>
@@ -373,6 +375,7 @@ export function AdminPage() {
                     imagePreview={imagePreview}
                     onImageSelect={handleImageFileSelect}
                     label={t.mainImage}
+                    subtitle={t.uploadSubtitle}
                   />
                   {imagePreview && (
                     <button

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,16 +10,29 @@ import type { Product } from "@shared/schema";
 import { useLanguage } from "@/lib/LanguageContext";
 import { translations, getProductName } from "@/lib/translations";
 import { useLocation } from "wouter";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function ProductInventoryPage() {
   const { language } = useLanguage();
   const t = translations[language];
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   const { data: products = [], isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
+
+  // Filter products by category
+  const filteredProducts = selectedCategory === "all" 
+    ? products 
+    : products.filter(p => p.category === selectedCategory);
 
   const deleteMutation = useMutation({
     mutationFn: async (productId: string) => {
@@ -100,6 +114,25 @@ export function ProductInventoryPage() {
           </Card>
         </div>
 
+        {/* Filter by Category */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">{t.category}</label>
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="w-full md:w-64" data-testid="select-category-filter">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">{t.allProducts || "جميع المنتجات"}</SelectItem>
+              <SelectItem value="Nuts">{t.nuts}</SelectItem>
+              <SelectItem value="Grains">{t.grains}</SelectItem>
+              <SelectItem value="Spices">{t.spices}</SelectItem>
+              <SelectItem value="Dried Fruits">{t.driedFruits}</SelectItem>
+              <SelectItem value="Organic Products">{t.organicProducts}</SelectItem>
+              <SelectItem value="Cosmetics">{t.cosmetics}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Products List */}
         <div>
           <div className="space-y-3">
@@ -107,19 +140,23 @@ export function ProductInventoryPage() {
               <Card className="p-8 text-center">
                 <p className="text-muted-foreground">{t.noProducts}</p>
               </Card>
-            ) : products.length === 0 ? (
+            ) : filteredProducts.length === 0 ? (
               <Card className="p-8 text-center">
-                <p className="text-muted-foreground mb-4">{t.noProducts}</p>
-                <Button
-                  onClick={() => setLocation("/admin-panel-secret")}
-                  data-testid="button-add-first-product"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  {t.addProduct}
-                </Button>
+                <p className="text-muted-foreground mb-4">
+                  {products.length === 0 ? t.noProducts : "لا توجد منتجات في هذه الفئة"}
+                </p>
+                {products.length === 0 && (
+                  <Button
+                    onClick={() => setLocation("/admin-panel-secret")}
+                    data-testid="button-add-first-product"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    {t.addProduct}
+                  </Button>
+                )}
               </Card>
             ) : (
-              products.map((product) => (
+              filteredProducts.map((product) => (
                 <Card key={product.id} className="overflow-hidden flex flex-col md:flex-row hover-elevate transition-all" data-testid={`card-product-${product.id}`}>
                   {/* Image Section */}
                   <div className="relative w-full h-56 md:w-48 md:h-auto shrink-0 bg-muted">

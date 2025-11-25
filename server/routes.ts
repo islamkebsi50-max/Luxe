@@ -244,7 +244,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/admin/products", async (req, res) => {
     try {
-      const validatedData = createProductSchema.parse(req.body);
+      // Convert price string to number if it's a string
+      const bodyData = {
+        ...req.body,
+        price: typeof req.body.price === 'string' ? parseFloat(req.body.price) : req.body.price,
+      };
+      
+      const validatedData = createProductSchema.parse(bodyData);
       const product = await storage.createProduct({
         name: validatedData.name,
         description: validatedData.description,
@@ -259,6 +265,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       res.json(product);
     } catch (error) {
+      console.error("Product creation error:", error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Invalid product data", details: error.errors });
       }
@@ -268,7 +275,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/admin/products/:id", async (req, res) => {
     try {
-      const validatedData = createProductSchema.partial().parse(req.body);
+      // Convert price string to number if it's a string
+      const bodyData = {
+        ...req.body,
+        price: typeof req.body.price === 'string' ? parseFloat(req.body.price) : req.body.price,
+      };
+      
+      const validatedData = createProductSchema.partial().parse(bodyData);
       const updates: Record<string, any> = {};
       
       if (validatedData.name) updates.name = validatedData.name;
@@ -287,6 +300,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.json(product);
     } catch (error) {
+      console.error("Product update error:", error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Invalid product data", details: error.errors });
       }

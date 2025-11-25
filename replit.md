@@ -54,19 +54,22 @@ Preferred communication style: Simple, everyday language.
 
 **Session Management**: Cookie-based sessions using `cookie-parser`. Each user gets a unique session ID stored in an HTTP-only cookie that persists for 30 days. This session ID links anonymous users to their cart items.
 
-**Database Layer**: Storage abstraction pattern with `IStorage` interface implemented by `DatabaseStorage` class. This allows for potential swapping of database implementations without changing business logic.
+**Database Layer**: Storage abstraction pattern with `IStorage` interface implemented by either `FirestoreStorage` (for Firestore backend) or `MemoryStorage` (for development without Firebase credentials). This allows for flexible database implementations without changing business logic.
 
 **Development vs Production**:
-- Development: Vite middleware for HMR and instant updates
-- Production: Static file serving from pre-built `dist/public` directory
+- Development: Memory storage by default (no external database required)
+- Production (with Firebase): Firestore backend with imgbb for image hosting
+- Static file serving from pre-built `dist/public` directory
 
-**Seed Data**: Automatic database seeding on startup if no products exist, including product images stored in `/attached_assets/generated_images/`.
+**Seed Data**: Automatic seeding on startup with sample products.
 
 ### Data Storage
 
-**ORM**: Drizzle ORM for type-safe database queries with PostgreSQL dialect.
+**Database Options**:
+1. **Development (Default)**: In-memory storage (`MemoryStorage`) - no external configuration needed
+2. **Production (Optional)**: Cloud Firestore with Firebase Admin SDK
 
-**Database Client**: Neon Serverless PostgreSQL client with WebSocket support.
+**Image Hosting**: imgbb API for converting and hosting uploaded images as URLs
 
 **Schema Design** (defined in `shared/schema.ts`):
 
@@ -86,9 +89,7 @@ Preferred communication style: Simple, everyday language.
    - Items stored as JSON string
    - Includes total, shipping address fields
 
-**Migrations**: Managed via Drizzle Kit with `drizzle.config.ts`. Migration files stored in `/migrations` directory.
-
-**Type Safety**: Shared types between frontend and backend through `@shared/schema` imports. Zod schemas generate both TypeScript types and runtime validation.
+**Type Safety**: Shared types between frontend and backend through `@shared/schema` imports. Zod schemas provide both TypeScript types and runtime validation.
 
 ### Authentication & Authorization
 
@@ -115,12 +116,16 @@ Preferred communication style: Simple, everyday language.
 
 ### Third-Party Services
 
-**Database**: Neon Serverless PostgreSQL (requires `DATABASE_URL` environment variable).
+**Image Hosting**: imgbb (requires `IMGBB_API_KEY`) - converts uploaded image files to permanent URLs
+
+**Firebase (Optional for Production)**:
+- Firestore database for persistent data storage
+- Firebase Admin SDK for server-side operations
 
 **CDN/Assets**: 
 - Google Fonts API for Inter and Playfair Display typefaces
-- Unsplash for product images (in seed data)
-- Local `/attached_assets/generated_images/` for custom product photos
+- imgbb for product images
+- Local `/attached_assets/generated_images/` for reference
 
 **Communication**: WhatsApp Business integration via WhatsAppButton component (configurable phone number).
 
@@ -139,11 +144,10 @@ Preferred communication style: Simple, everyday language.
 
 **Data Fetching**:
 - `@tanstack/react-query` - Server state management
-- `@neondatabase/serverless` - Neon database client
+- `firebase-admin` - Firebase Admin SDK for server-side database operations
 
-**Database**:
-- `drizzle-orm` - Type-safe ORM
-- `drizzle-zod` - Zod schema generation from Drizzle schemas
+**Image Handling**:
+- `form-data` - Multipart form data for image uploads
 
 **Development**:
 - `vite` - Build tool and dev server
@@ -152,9 +156,17 @@ Preferred communication style: Simple, everyday language.
 
 ### Environment Variables
 
-Required:
-- `DATABASE_URL` - PostgreSQL connection string (Neon)
-- `NODE_ENV` - "development" or "production"
+Optional (for Firestore backend):
+- `FIREBASE_PROJECT_ID` - Firebase project ID
+- `FIREBASE_API_KEY` - Firebase API key (for client-side configuration)
+- `FIREBASE_AUTH_DOMAIN` - Firebase auth domain
+- `FIREBASE_PRIVATE_KEY` - Firebase service account private key (for server-side admin SDK)
+- `FIREBASE_CLIENT_EMAIL` - Firebase service account client email
+- `IMGBB_API_KEY` - imgbb API key for image uploads
 
-Optional:
+Development:
+- Uses in-memory storage by default (no configuration needed)
+- Falls back to memory storage if Firebase credentials are missing
+
+Development Tools:
 - `REPL_ID` - Replit environment identifier (for dev plugins)

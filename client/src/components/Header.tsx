@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Link, useLocation } from "wouter";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 interface HeaderProps {
   cartItemCount: number;
@@ -13,19 +15,21 @@ interface HeaderProps {
 
 export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderProps) {
   const [location] = useLocation();
+  const { language, setLanguage } = useLanguage();
+  const t = translations[language];
 
   const navLinks = [
-    { label: "Home", href: "/", id: "home" },
-    { label: "Shop All", href: "/products", id: "shop" },
+    { label: t.home, href: "/", id: "home" },
+    { label: t.shopAll, href: "/products", id: "shop" },
   ];
 
   const categories = [
-    { label: "Nuts", href: "/products?category=Nuts", id: "nuts" },
-    { label: "Grains", href: "/products?category=Grains", id: "grains" },
-    { label: "Spices", href: "/products?category=Spices", id: "spices" },
-    { label: "Dried Fruits", href: "/products?category=Dried Fruits", id: "dried-fruits" },
-    { label: "Organic Products", href: "/products?category=Organic Products", id: "organic" },
-    { label: "Cosmetics", href: "/products?category=Cosmetics", id: "cosmetics" },
+    { label: t.nuts, href: "/products?category=Nuts", id: "nuts" },
+    { label: t.grains, href: "/products?category=Grains", id: "grains" },
+    { label: t.spices, href: "/products?category=Spices", id: "spices" },
+    { label: t.driedFruits, href: "/products?category=Dried Fruits", id: "dried-fruits" },
+    { label: t.organicProducts, href: "/products?category=Organic Products", id: "organic" },
+    { label: t.cosmetics, href: "/products?category=Cosmetics", id: "cosmetics" },
   ];
 
   const getNavButtonClass = (href: string, id: string) => {
@@ -85,7 +89,7 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
 
                 {/* Category Divider */}
                 <div className="my-4 px-3 border-t pt-4">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Categories</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">{t.categories}</p>
                 </div>
 
                 {/* Categories */}
@@ -158,13 +162,24 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
               <Input
                 type="search"
-                placeholder="Search products..."
+                placeholder={t.search}
                 className="pl-9 bg-secondary/50 border-0 focus-visible:ring-primary"
                 onChange={(e) => onSearchChange(e.target.value)}
                 data-testid="input-search"
               />
             </div>
           </div>
+
+          {/* Language Toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hover-elevate text-foreground"
+            onClick={() => setLanguage(language === "en" ? "ar" : "en")}
+            data-testid="button-language-toggle"
+          >
+            {language === "en" ? "العربية" : "English"}
+          </Button>
 
           {/* Cart Button */}
           <Button
@@ -193,7 +208,7 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
             <Input
               type="search"
-              placeholder="Search products..."
+              placeholder={t.search}
               className="pl-9 bg-secondary/50 border-0 focus-visible:ring-primary"
               onChange={(e) => onSearchChange(e.target.value)}
               data-testid="input-search-mobile"

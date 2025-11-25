@@ -19,6 +19,7 @@ import { AdminLayout } from "@/components/AdminLayout";
 import NotFound from "@/pages/not-found";
 import type { Product, CartItem } from "@shared/schema";
 import { apiRequest } from "./lib/queryClient";
+import { LanguageProvider } from "@/lib/LanguageContext";
 
 function AppContent() {
   const [location, setLocation] = useLocation();
@@ -194,11 +195,13 @@ function AppContent() {
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AppContent />
-        <Toaster />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <LanguageProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <AppContent />
+          <Toaster />
+        </TooltipProvider>
+      </QueryClientProvider>
+    </LanguageProvider>
   );
 }

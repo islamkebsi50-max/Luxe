@@ -372,8 +372,12 @@ export function AdminPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="food">Food</SelectItem>
-                    <SelectItem value="cosmetic">Cosmetics</SelectItem>
+                    <SelectItem value="Nuts">{t.nuts}</SelectItem>
+                    <SelectItem value="Grains">{t.grains}</SelectItem>
+                    <SelectItem value="Spices">{t.spices}</SelectItem>
+                    <SelectItem value="Dried Fruits">{t.driedFruits}</SelectItem>
+                    <SelectItem value="Organic Products">{t.organicProducts}</SelectItem>
+                    <SelectItem value="Cosmetics">{t.cosmetics}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

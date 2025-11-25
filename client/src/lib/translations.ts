@@ -1,3 +1,16 @@
+// Helper to get translated category name
+export const getCategoryName = (categoryKey: string, language: "en" | "ar"): string => {
+  const categoryMap: Record<string, Record<"en" | "ar", string>> = {
+    Nuts: { en: "Nuts", ar: "المكسرات" },
+    Grains: { en: "Grains", ar: "الحبوب" },
+    Spices: { en: "Spices", ar: "التوابل" },
+    "Dried Fruits": { en: "Dried Fruits", ar: "الفواكه المجففة" },
+    "Organic Products": { en: "Organic Products", ar: "المنتجات العضوية" },
+    Cosmetics: { en: "Cosmetics", ar: "مستحضرات العناية" },
+  };
+  return categoryMap[categoryKey]?.[language] || categoryKey;
+};
+
 export const translations = {
   en: {
     // Navigation

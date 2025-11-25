@@ -9,7 +9,7 @@ import type { Product } from "@shared/schema";
 import heroImage1 from "@assets/generated_images/modern_living_room_hero.png";
 import heroImage2 from "@assets/generated_images/urban_fashion_lifestyle_hero.png";
 import { useLanguage } from "@/lib/LanguageContext";
-import { translations } from "@/lib/translations";
+import { translations, getCategoryName } from "@/lib/translations";
 
 interface HomePageProps {
   products: Product[];
@@ -47,8 +47,8 @@ export function HomePage({ products, onAddToCart }: HomePageProps) {
   const featuredBundles = displayProducts.length > 1
     ? [
         {
-          name: "Best Sellers Bundle",
-          description: "Our most popular product combinations",
+          name: t.bestSellersBundle,
+          description: t.ourMostPopular,
           product1: displayProducts[0],
           product2: displayProducts[Math.min(1, displayProducts.length - 1)],
           discount: 15,
@@ -131,7 +131,7 @@ export function HomePage({ products, onAddToCart }: HomePageProps) {
                 }`}
                 data-testid={`button-category-${category.name}`}
               >
-                {category.name}
+                {getCategoryName(category.name, language)}
               </Button>
             ))}
           </div>

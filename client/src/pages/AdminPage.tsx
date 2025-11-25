@@ -94,7 +94,7 @@ export function AdminPage() {
     description: "",
     price: "",
     image: "",
-    category: "Food" as string,
+    category: "food" as string,
     inStock: true,
     tags: "" as string, // comma-separated tags
   });
@@ -198,7 +198,7 @@ export function AdminPage() {
       description: "",
       price: "",
       image: "",
-      category: "Food",
+      category: "food",
       inStock: true,
       tags: "",
     });
@@ -400,15 +400,8 @@ export function AdminPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Food">Food</SelectItem>
-                    <SelectItem value="Nuts">Nuts</SelectItem>
-                    <SelectItem value="Grains">Grains</SelectItem>
-                    <SelectItem value="Spices">Spices</SelectItem>
-                    <SelectItem value="Dried Fruits">Dried Fruits</SelectItem>
-                    <SelectItem value="Organic Products">Organic Products</SelectItem>
-                    <SelectItem value="Cosmetics">Cosmetics</SelectItem>
-                    <SelectItem value="Skincare">Skincare</SelectItem>
-                    <SelectItem value="Supplements">Supplements</SelectItem>
+                    <SelectItem value="food">Food</SelectItem>
+                    <SelectItem value="cosmetic">Cosmetics</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

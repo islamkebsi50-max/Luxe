@@ -228,7 +228,7 @@ export function AdminPage() {
       description: product.description,
       price: product.price,
       image: primaryImage,
-      category: product.category,
+      category: product.category.toLowerCase(),
       inStock: product.inStock,
       tags: (product.tags || []).join(", "),
     });

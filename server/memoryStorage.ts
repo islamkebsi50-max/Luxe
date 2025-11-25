@@ -26,7 +26,7 @@ export class MemoryStorage implements IStorage {
           "Delicious, nutrient-dense organic almonds sourced from premium farms. Raw and unsalted, perfect for snacking or cooking. Rich in protein, fiber, and healthy fats.",
         price: "18.99",
         originalPrice: "22.99",
-        category: "Nuts",
+        category: "food",
         image: "https://via.placeholder.com/400?text=Almonds",
         images: [
           "https://via.placeholder.com/400?text=Almonds",
@@ -46,7 +46,7 @@ export class MemoryStorage implements IStorage {
           "Premium quality golden flax seeds packed with omega-3 fatty acids and fiber. Perfect for smoothies, salads, or baking. Non-GMO and certified organic.",
         price: "12.99",
         originalPrice: null,
-        category: "Grains",
+        category: "food",
         image: "https://via.placeholder.com/400?text=FlaxSeeds",
         images: [
           "https://via.placeholder.com/400?text=FlaxSeeds",

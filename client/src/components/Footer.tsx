@@ -1,8 +1,12 @@
 import { Link, useLocation } from "wouter";
 import { useState, useEffect } from "react";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 export function Footer() {
   const [, setLocation] = useLocation();
+  const { language } = useLanguage();
+  const t = translations[language];
   const [privacyClickCount, setPrivacyClickCount] = useState(0);
   const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
 
@@ -42,30 +46,30 @@ export function Footer() {
 
   const footerSections = [
     {
-      title: "Shop",
+      title: t.shop,
       links: [
-        { label: "All Products", href: "/products" },
-        { label: "New Arrivals", href: "/products" },
-        { label: "Best Sellers", href: "/products" },
-        { label: "Sale", href: "/products" },
+        { label: t.allProducts, href: "/products" },
+        { label: t.newArrivals, href: "/products" },
+        { label: t.bestSellers, href: "/products" },
+        { label: t.sale, href: "/products" },
       ],
     },
     {
-      title: "Support",
+      title: t.support,
       links: [
-        { label: "Contact Us", href: "#" },
-        { label: "Shipping Info", href: "#" },
-        { label: "Returns", href: "#" },
-        { label: "FAQ", href: "#" },
+        { label: t.contactUs, href: "#" },
+        { label: t.shippingInfo, href: "#" },
+        { label: t.returns, href: "#" },
+        { label: t.faq, href: "#" },
       ],
     },
     {
-      title: "Company",
+      title: t.company,
       links: [
-        { label: "About Us", href: "#" },
-        { label: "Careers", href: "#" },
-        { label: "Sustainability", href: "#" },
-        { label: "Press", href: "#" },
+        { label: t.aboutUs, href: "#" },
+        { label: t.careers, href: "#" },
+        { label: t.sustainability, href: "#" },
+        { label: t.press, href: "#" },
       ],
     },
   ];
@@ -79,7 +83,7 @@ export function Footer() {
             <div>
               <h2 className="font-serif text-2xl font-bold mb-4">LUXE</h2>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Premium products with modern design and timeless quality. Elevate your everyday.
+                {t.premiumProducts}
               </p>
             </div>
 
@@ -107,7 +111,7 @@ export function Footer() {
         <div className="border-t py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2024 LUXE. All rights reserved.
+              {t.allRightsReserved}
             </p>
             <div className="flex gap-6">
               <button
@@ -115,10 +119,10 @@ export function Footer() {
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                 data-testid="button-privacy-policy"
               >
-                Privacy Policy
+                {t.privacyPolicy}
               </button>
               <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Terms of Service
+                {t.termsOfService}
               </a>
             </div>
           </div>

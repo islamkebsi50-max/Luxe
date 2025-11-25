@@ -16,6 +16,8 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { SlidersHorizontal, Search, X } from "lucide-react";
 import type { Product } from "@shared/schema";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 interface ProductListingPageProps {
   products: Product[];
@@ -30,6 +32,9 @@ export function ProductListingPage({
   searchQuery = "",
   categoryFilter = "",
 }: ProductListingPageProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+  
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     categoryFilter ? [categoryFilter] : []
   );
@@ -100,7 +105,7 @@ export function ProductListingPage({
   const FilterContent = () => (
     <div className="space-y-6">
       <div>
-        <h3 className="font-semibold mb-4 text-foreground">Categories</h3>
+        <h3 className="font-semibold mb-4 text-foreground">{t.categories}</h3>
         <div className="space-y-3">
           {categories.map((category) => (
             <div key={category} className="flex items-center space-x-2">
@@ -122,7 +127,7 @@ export function ProductListingPage({
       </div>
 
       <div>
-        <h3 className="font-semibold mb-4 text-foreground">Price Range</h3>
+        <h3 className="font-semibold mb-4 text-foreground">{t.priceRange}</h3>
         <div className="space-y-4">
           <Slider
             min={0}
@@ -218,13 +223,13 @@ export function ProductListingPage({
                     data-testid="button-open-filters"
                   >
                     <SlidersHorizontal className="h-4 w-4 mr-2" />
-                    Filters
+                    {t.filters}
                     {hasActiveFilters && <span className="ml-2 text-xs font-bold bg-primary text-primary-foreground px-2 py-1 rounded-full">Active</span>}
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="w-80">
                   <SheetHeader>
-                    <SheetTitle>Filters</SheetTitle>
+                    <SheetTitle>{t.filters}</SheetTitle>
                   </SheetHeader>
                   <div className="mt-6">
                     <FilterContent />
@@ -234,16 +239,16 @@ export function ProductListingPage({
 
               {/* Sort Dropdown */}
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground font-medium hidden sm:inline">Sort by:</span>
+                <span className="text-sm text-muted-foreground font-medium hidden sm:inline">{t.sortBy}</span>
                 <Select value={sortBy} onValueChange={setSortBy}>
                   <SelectTrigger className="w-full sm:w-56" data-testid="select-sort">
-                    <SelectValue placeholder="Sort by" />
+                    <SelectValue placeholder={t.sortBy} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="featured">Featured</SelectItem>
-                    <SelectItem value="price-low">Price: Low to High</SelectItem>
-                    <SelectItem value="price-high">Price: High to Low</SelectItem>
-                    <SelectItem value="rating">Highest Rated</SelectItem>
+                    <SelectItem value="featured">{t.featured}</SelectItem>
+                    <SelectItem value="price-low">{t.priceLowToHigh}</SelectItem>
+                    <SelectItem value="price-high">{t.priceHighToLow}</SelectItem>
+                    <SelectItem value="rating">{t.rating}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -251,7 +256,7 @@ export function ProductListingPage({
 
             {filteredProducts.length === 0 ? (
               <Card className="p-12 text-center">
-                <p className="text-lg text-muted-foreground mb-4">No products found</p>
+                <p className="text-lg text-muted-foreground mb-4">{t.noProducts}</p>
                 <Button
                   variant="outline"
                   onClick={() => {

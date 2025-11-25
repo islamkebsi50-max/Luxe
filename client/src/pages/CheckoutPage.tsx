@@ -19,6 +19,8 @@ import { Check, ShoppingBag } from "lucide-react";
 import { Link } from "wouter";
 import type { Product, CartItem } from "@shared/schema";
 import { z } from "zod";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 interface CheckoutPageProps {
   cartItems: Array<CartItem & { product: Product }>;
@@ -30,6 +32,8 @@ const checkoutFormSchema = insertOrderSchema.omit({ sessionId: true, items: true
 });
 
 export function CheckoutPage({ cartItems, onPlaceOrder }: CheckoutPageProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
   const [orderPlaced, setOrderPlaced] = useState(false);
 
   const form = useForm<z.infer<typeof checkoutFormSchema>>({
@@ -63,12 +67,12 @@ export function CheckoutPage({ cartItems, onPlaceOrder }: CheckoutPageProps) {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-2xl">
           <Card className="p-12 text-center">
             <ShoppingBag className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2">Your cart is empty</h2>
+            <h2 className="text-2xl font-bold mb-2">{t.yourCartEmpty}</h2>
             <p className="text-muted-foreground mb-6">
-              Add some products before checking out
+              {t.addSomeProducts}
             </p>
             <Link href="/products">
-              <Button data-testid="button-shop-now">Continue Shopping</Button>
+              <Button data-testid="button-shop-now">{t.continueShopping}</Button>
             </Link>
           </Card>
         </div>
@@ -85,20 +89,20 @@ export function CheckoutPage({ cartItems, onPlaceOrder }: CheckoutPageProps) {
               <Check className="h-8 w-8 text-green-600" />
             </div>
             <h2 className="text-3xl font-serif font-bold mb-2" data-testid="text-order-success">
-              Order Placed Successfully!
+              {t.orderPlaced}
             </h2>
             <p className="text-muted-foreground mb-8">
-              Thank you for your purchase. We'll send you a confirmation email shortly.
+              {t.orderPlacedMsg}
             </p>
             <div className="space-y-3">
               <Link href="/products">
                 <Button className="w-full" data-testid="button-continue-shopping">
-                  Continue Shopping
+                  {t.continueShopping}
                 </Button>
               </Link>
               <Link href="/">
                 <Button variant="outline" className="w-full hover-elevate" data-testid="button-home">
-                  Back to Home
+                  {t.backToHome}
                 </Button>
               </Link>
             </div>
@@ -112,7 +116,7 @@ export function CheckoutPage({ cartItems, onPlaceOrder }: CheckoutPageProps) {
     <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="font-serif text-4xl font-bold mb-8" data-testid="text-checkout-title">
-          Checkout
+          {t.checkoutTitle}
         </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -122,7 +126,7 @@ export function CheckoutPage({ cartItems, onPlaceOrder }: CheckoutPageProps) {
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                   <div>
-                    <h2 className="text-xl font-semibold mb-4">Shipping Information</h2>
+                    <h2 className="text-xl font-semibold mb-4">{t.shippingInformation}</h2>
                     <div className="space-y-4">
                       <FormField
                         control={form.control}

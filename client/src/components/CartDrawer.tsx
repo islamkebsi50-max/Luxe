@@ -4,6 +4,8 @@ import { Separator } from "@/components/ui/separator";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { Link } from "wouter";
 import type { Product, CartItem } from "@shared/schema";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 interface CartDrawerProps {
   open: boolean;
@@ -20,6 +22,9 @@ export function CartDrawer({
   onUpdateQuantity,
   onRemoveItem,
 }: CartDrawerProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+  
   const subtotal = cartItems.reduce(
     (sum, item) => sum + parseFloat(item.product.price) * item.quantity,
     0
@@ -33,10 +38,10 @@ export function CartDrawer({
         <SheetHeader className="pb-4">
           <div className="flex items-center gap-3">
             <ShoppingBag className="h-6 w-6" />
-            <SheetTitle className="text-2xl font-serif">Shopping Cart</SheetTitle>
+            <SheetTitle className="text-2xl font-serif">{t.shoppingCart}</SheetTitle>
             {cartItems.length > 0 && (
               <span className="ml-auto bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
-                {cartItems.reduce((sum, item) => sum + item.quantity, 0)} items
+                {cartItems.reduce((sum, item) => sum + item.quantity, 0)} {t.items}
               </span>
             )}
           </div>
@@ -48,9 +53,9 @@ export function CartDrawer({
               <ShoppingBag className="h-8 w-8 text-muted-foreground" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-2 text-foreground">Your cart is empty</h3>
+              <h3 className="text-lg font-semibold mb-2 text-foreground">{t.yourCartEmpty}</h3>
               <p className="text-sm text-muted-foreground mb-6">
-                Add some products to get started!
+                {t.addSomeProducts}
               </p>
               <Link href="/products">
                 <Button 
@@ -58,7 +63,7 @@ export function CartDrawer({
                   className="bg-primary hover:bg-primary/90"
                   data-testid="button-continue-shopping"
                 >
-                  Continue Shopping
+                  {t.continueShopping}
                 </Button>
               </Link>
             </div>
@@ -141,13 +146,13 @@ export function CartDrawer({
               {/* Pricing Breakdown */}
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Subtotal</span>
+                  <span className="text-muted-foreground">{t.subtotal}</span>
                   <span className="font-medium" data-testid="text-subtotal">${subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Shipping</span>
+                  <span className="text-muted-foreground">{t.shipping}</span>
                   <span className={`font-medium ${shipping === 0 ? "text-green-600" : ""}`} data-testid="text-shipping">
-                    {shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
+                    {shipping === 0 ? t.free : `$${shipping.toFixed(2)}`}
                   </span>
                 </div>
                 {subtotal > 0 && subtotal < 100 && (
@@ -157,7 +162,7 @@ export function CartDrawer({
                 )}
                 <Separator className="my-2" />
                 <div className="flex justify-between font-bold text-base">
-                  <span className="text-foreground">Total</span>
+                  <span className="text-foreground">{t.total}</span>
                   <span className="text-primary text-lg" data-testid="text-total">${total.toFixed(2)}</span>
                 </div>
               </div>
@@ -169,7 +174,7 @@ export function CartDrawer({
                   onClick={() => onOpenChange(false)}
                   data-testid="button-checkout"
                 >
-                  Proceed to Checkout
+                  {t.checkout}
                 </Button>
               </Link>
 
@@ -181,7 +186,7 @@ export function CartDrawer({
                   onClick={() => onOpenChange(false)}
                   data-testid="button-continue-shopping-drawer"
                 >
-                  Continue Shopping
+                  {t.continueShopping}
                 </Button>
               </Link>
             </div>

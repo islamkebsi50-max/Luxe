@@ -13,6 +13,8 @@ import {
 import { Star, ShoppingCart, Minus, Plus, Check } from "lucide-react";
 import { Link } from "wouter";
 import type { Product } from "@shared/schema";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 interface ProductDetailPageProps {
   product: Product;
@@ -25,6 +27,9 @@ export function ProductDetailPage({
   relatedProducts,
   onAddToCart,
 }: ProductDetailPageProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+  
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -51,11 +56,11 @@ export function ProductDetailPage({
         {/* Breadcrumb */}
         <nav className="mb-8 text-sm text-muted-foreground">
           <Link href="/">
-            <span className="hover:text-foreground cursor-pointer">Home</span>
+            <span className="hover:text-foreground cursor-pointer">{t.home}</span>
           </Link>
           <span className="mx-2">/</span>
           <Link href="/products">
-            <span className="hover:text-foreground cursor-pointer">Products</span>
+            <span className="hover:text-foreground cursor-pointer">{t.products}</span>
           </Link>
           <span className="mx-2">/</span>
           <span className="text-foreground">{product.name}</span>

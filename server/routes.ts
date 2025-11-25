@@ -1,11 +1,30 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
-import { FirestoreStorage } from "./storage";
+import type { IStorage } from "./storage";
 import { insertCartItemSchema, insertOrderSchema } from "@shared/schema";
 import { z } from "zod";
 import { randomUUID } from "crypto";
+import { MemoryStorage } from "./memoryStorage";
 
-const storage = new FirestoreStorage();
+let storage: IStorage;
+
+async function initializeStorage() {
+  // Try to use Firestore if configured, otherwise fall back to memory storage
+  const hasFirebaseConfig = process.env.FIREBASE_PROJECT_ID;
+  
+  if (hasFirebaseConfig) {
+    try {
+      const { FirestoreStorage } = await import("./firestoreStorage");
+      storage = new FirestoreStorage();
+    } catch (error) {
+      console.warn("Failed to initialize Firestore, falling back to memory storage");
+      storage = new MemoryStorage();
+    }
+  } else {
+    // Use memory storage by default in development
+    storage = new MemoryStorage();
+  }
+}
 
 const addToCartSchema = z.object({
   productId: z.string().min(1, "Product ID is required"),
@@ -33,6 +52,8 @@ function getOrCreateSession(req: Request, res: Response): string {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Initialize storage before registering routes
+  await initializeStorage();
   // Products
   app.get("/api/products", async (_req, res) => {
     try {

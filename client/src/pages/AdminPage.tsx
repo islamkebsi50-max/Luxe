@@ -94,13 +94,12 @@ export function AdminPage() {
     description: "",
     price: "",
     image: "",
-    images: ["", "", "", ""] as string[], // up to 4 additional images
     category: "Food" as string,
     inStock: true,
     tags: "" as string, // comma-separated tags
   });
 
-  const [imagePreviews, setImagePreviews] = useState<(string | null)[]>([null, null, null, null, null]);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
 
   // Fetch products
@@ -115,11 +114,9 @@ export function AdminPage() {
         .split(",")
         .map((tag) => tag.trim())
         .filter((tag) => tag.length > 0);
-      // Combine primary image with additional images
-      const allImages = [data.image, ...data.images.filter((img) => img.trim())];
       return await apiRequest("POST", "/api/admin/products", {
         ...data,
-        images: allImages,
+        images: [data.image],
         price: parseFloat(data.price),
         tags,
       });
@@ -149,11 +146,9 @@ export function AdminPage() {
         .split(",")
         .map((tag) => tag.trim())
         .filter((tag) => tag.length > 0);
-      // Combine primary image with additional images
-      const allImages = [data.image, ...data.images.filter((img) => img.trim())];
       return await apiRequest("PUT", `/api/admin/products/${editingId}`, {
         ...data,
-        images: allImages,
+        images: [data.image],
         price: parseFloat(data.price),
         tags,
       });
@@ -203,71 +198,41 @@ export function AdminPage() {
       description: "",
       price: "",
       image: "",
-      images: ["", "", "", ""],
       category: "Food",
       inStock: true,
       tags: "",
     });
-    setImagePreviews([null, null, null, null, null]);
+    setImagePreview(null);
   };
 
-  const handleImageFileSelect = (file: File, index: number) => {
+  const handleImageFileSelect = (file: File) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const preview = event.target?.result as string;
-      setImagePreviews((prev) => {
-        const newPreviews = [...prev];
-        newPreviews[index] = preview;
-        return newPreviews;
-      });
-
-      // Mark that an image was selected by setting a placeholder value
-      if (index === 0) {
-        setFormData((prev) => ({ ...prev, image: "image-selected" }));
-      } else {
-        setFormData((prev) => {
-          const newImages = [...prev.images];
-          newImages[index - 1] = "image-selected";
-          return { ...prev, images: newImages };
-        });
-      }
+      setImagePreview(preview);
+      setFormData((prev) => ({ ...prev, image: "image-selected" }));
     };
     reader.readAsDataURL(file);
   };
 
-  const clearImagePreview = (index: number) => {
-    setImagePreviews((prev) => {
-      const newPreviews = [...prev];
-      newPreviews[index] = null;
-      return newPreviews;
-    });
-
-    if (index === 0) {
-      setFormData((prev) => ({ ...prev, image: "" }));
-    } else {
-      setFormData((prev) => {
-        const newImages = [...prev.images];
-        newImages[index - 1] = "";
-        return { ...prev, images: newImages };
-      });
-    }
+  const clearImagePreview = () => {
+    setImagePreview(null);
+    setFormData((prev) => ({ ...prev, image: "" }));
   };
 
   const handleEdit = (product: Product) => {
-    // First image is primary, rest are additional
-    const [primary, ...additional] = product.images || [product.image];
-    const additionalImages = [...additional, ...Array(4 - additional.length).fill("")].slice(0, 4);
+    const primaryImage = product.images?.[0] || product.image;
     
     setFormData({
       name: product.name,
       description: product.description,
       price: product.price,
-      image: primary || product.image,
-      images: additionalImages,
+      image: primaryImage,
       category: product.category,
       inStock: product.inStock,
       tags: (product.tags || []).join(", "),
     });
+    setImagePreview(primaryImage);
     setEditingId(product.id);
     setShowAddForm(false);
   };
@@ -403,46 +368,22 @@ export function AdminPage() {
 
               <div>
                 <label className="text-sm font-medium mb-3 block">{t.imageUrls} *</label>
-                <div className="grid grid-cols-2 gap-3">
-                  {/* Main image */}
-                  <div className="relative">
-                    <ImageUploadCard
-                      imagePreview={imagePreviews[0]}
-                      onImageSelect={(file) => handleImageFileSelect(file, 0)}
-                      label={t.mainImage}
-                    />
-                    {imagePreviews[0] && (
-                      <button
-                        type="button"
-                        onClick={() => clearImagePreview(0)}
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 hover:opacity-100 transition-opacity"
-                        data-testid="button-clear-image-0"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Additional images */}
-                  {formData.images.map((_, idx) => (
-                    <div key={idx} className="relative">
-                      <ImageUploadCard
-                        imagePreview={imagePreviews[idx + 1]}
-                        onImageSelect={(file) => handleImageFileSelect(file, idx + 1)}
-                        label={`${t.additionalImage} ${idx + 1}`}
-                      />
-                      {imagePreviews[idx + 1] && (
-                        <button
-                          type="button"
-                          onClick={() => clearImagePreview(idx + 1)}
-                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 hover:opacity-100 transition-opacity"
-                          data-testid={`button-clear-image-${idx + 1}`}
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  ))}
+                <div className="relative max-w-sm">
+                  <ImageUploadCard
+                    imagePreview={imagePreview}
+                    onImageSelect={handleImageFileSelect}
+                    label={t.mainImage}
+                  />
+                  {imagePreview && (
+                    <button
+                      type="button"
+                      onClick={clearImagePreview}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 hover:opacity-100 transition-opacity"
+                      data-testid="button-clear-image"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
                 <p className="text-xs text-muted-foreground mt-3">{t.imageHint}</p>
               </div>

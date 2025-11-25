@@ -2,6 +2,8 @@ import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard, LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -10,6 +12,8 @@ interface AdminLayoutProps {
 export function AdminLayout({ children }: AdminLayoutProps) {
   const [location] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { language } = useLanguage();
+  const t = translations[language];
 
   return (
     <div className="flex h-screen bg-background">
@@ -27,7 +31,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             <Menu className="h-5 w-5" />
           )}
         </Button>
-        <h1 className="font-serif text-xl font-bold">Admin</h1>
+        <h1 className="font-serif text-xl font-bold">{t.admin}</h1>
         <div className="w-10" /> {/* Spacer for centering */}
       </div>
 
@@ -52,7 +56,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               className="font-serif text-2xl font-bold text-foreground hover-elevate cursor-pointer transition-colors"
               data-testid="link-admin-logo"
             >
-              Admin
+              {t.admin}
             </h1>
           </Link>
         </div>
@@ -66,7 +70,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               onClick={() => setSidebarOpen(false)}
             >
               <LayoutDashboard className="mr-2 h-4 w-4" />
-              Dashboard
+              {t.dashboard}
             </Button>
           </Link>
         </nav>
@@ -80,7 +84,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               onClick={() => setSidebarOpen(false)}
             >
               <LogOut className="mr-2 h-4 w-4" />
-              Back to Store
+              {t.backToStore}
             </Button>
           </Link>
         </div>

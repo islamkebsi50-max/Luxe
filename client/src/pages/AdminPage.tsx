@@ -8,6 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Trash2, Edit2, Plus } from "lucide-react";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import type { Product } from "@shared/schema";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations, getProductName } from "@/lib/translations";
 import {
   Select,
   SelectContent,
@@ -18,6 +20,8 @@ import {
 
 export function AdminPage() {
   const { toast } = useToast();
+  const { language } = useLanguage();
+  const t = translations[language];
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -55,8 +59,8 @@ export function AdminPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
-        title: "Product created",
-        description: "Product has been added successfully",
+        title: t.productCreated,
+        description: t.productAddedSuccess,
       });
       resetForm();
       setShowAddForm(false);
@@ -64,7 +68,7 @@ export function AdminPage() {
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.message || "Failed to create product",
+        description: error.message || t.failedCreateProduct,
         variant: "destructive",
       });
     },
@@ -89,8 +93,8 @@ export function AdminPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
-        title: "Product updated",
-        description: "Product has been updated successfully",
+        title: t.productUpdated,
+        description: t.productUpdatedSuccess,
       });
       resetForm();
       setEditingId(null);
@@ -98,7 +102,7 @@ export function AdminPage() {
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.message || "Failed to update product",
+        description: error.message || t.failedUpdateProduct,
         variant: "destructive",
       });
     },
@@ -112,14 +116,14 @@ export function AdminPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
-        title: "Product deleted",
-        description: "Product has been removed successfully",
+        title: t.productDeleted,
+        description: t.productDeletedSuccess,
       });
     },
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.message || "Failed to delete product",
+        description: error.message || t.failedDeleteProduct,
         variant: "destructive",
       });
     },
@@ -161,8 +165,8 @@ export function AdminPage() {
     e.preventDefault();
     if (!formData.name || !formData.description || !formData.price || !formData.image) {
       toast({
-        title: "Validation Error",
-        description: "Please fill in all fields",
+        title: t.validationError,
+        description: t.fillAllFields,
         variant: "destructive",
       });
       return;
@@ -201,31 +205,31 @@ export function AdminPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-10">
-          <h1 className="font-serif text-4xl font-bold mb-3 text-foreground">Inventory Management</h1>
-          <p className="text-muted-foreground text-lg">Organize and manage all items in your store</p>
+          <h1 className="font-serif text-4xl font-bold mb-3 text-foreground">{t.inventoryManagement}</h1>
+          <p className="text-muted-foreground text-lg">{t.organizeItems}</p>
         </div>
 
         {/* Inventory Statistics */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
           <Card className="p-6 text-center hover-elevate transition-all">
             <div className="text-3xl font-bold text-foreground mb-1">{totalProducts}</div>
-            <div className="text-sm text-muted-foreground">Total Items</div>
+            <div className="text-sm text-muted-foreground">{t.totalItems}</div>
           </Card>
           <Card className="p-6 text-center hover-elevate transition-all">
             <div className="text-3xl font-bold text-green-600 mb-1">{inStockCount}</div>
-            <div className="text-sm text-muted-foreground">In Stock</div>
+            <div className="text-sm text-muted-foreground">{t.inStock}</div>
           </Card>
           <Card className="p-6 text-center hover-elevate transition-all">
             <div className="text-3xl font-bold text-red-600 mb-1">{outOfStockCount}</div>
-            <div className="text-sm text-muted-foreground">Out of Stock</div>
+            <div className="text-sm text-muted-foreground">{t.outOfStock}</div>
           </Card>
           <Card className="p-6 text-center hover-elevate transition-all">
             <div className="text-3xl font-bold text-green-600 mb-1">{foodCount}</div>
-            <div className="text-sm text-muted-foreground">Food Items</div>
+            <div className="text-sm text-muted-foreground">{t.foodItems}</div>
           </Card>
           <Card className="p-6 text-center hover-elevate transition-all">
             <div className="text-3xl font-bold text-amber-600 mb-1">{cosmeticCount}</div>
-            <div className="text-sm text-muted-foreground">Cosmetics</div>
+            <div className="text-sm text-muted-foreground">{t.cosmetics}</div>
           </Card>
         </div>
 
@@ -234,7 +238,7 @@ export function AdminPage() {
           <Card className="lg:col-span-1 p-8 h-fit sticky top-8 rounded-xl">
             <div className="flex items-center justify-between mb-6">
               <h2 className="font-semibold text-lg text-foreground">
-                {editingId ? "✏️ Edit Item" : "➕ Add New Item"}
+                {editingId ? t.editItem : t.addNewItem}
               </h2>
               {editingId && (
                 <Button
@@ -246,16 +250,16 @@ export function AdminPage() {
                   }}
                   data-testid="button-cancel-edit"
                 >
-                  Cancel
+                  {t.cancel}
                 </Button>
               )}
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="text-sm font-medium">Product Name *</label>
+                <label className="text-sm font-medium">{t.productName} *</label>
                 <Input
-                  placeholder="e.g., Organic Almonds"
+                  placeholder={t.exampleAlmonds}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   data-testid="input-product-name"
@@ -263,9 +267,9 @@ export function AdminPage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium">Description *</label>
+                <label className="text-sm font-medium">{t.productDescription} *</label>
                 <textarea
-                  placeholder="Product description"
+                  placeholder={t.exampleDescription}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   className="w-full px-3 py-2 border rounded-md text-sm"
@@ -275,11 +279,11 @@ export function AdminPage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium">Price (USD) *</label>
+                <label className="text-sm font-medium">{t.priceUsd} *</label>
                 <Input
                   type="number"
                   step="0.01"
-                  placeholder="29.99"
+                  placeholder={t.examplePrice}
                   value={formData.price}
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                   data-testid="input-product-price"
@@ -287,11 +291,11 @@ export function AdminPage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium">Image URLs (up to 4) *</label>
+                <label className="text-sm font-medium">{t.imageUrls} *</label>
                 <div className="space-y-2">
                   <Input
                     type="url"
-                    placeholder="Main image (required) https://..."
+                    placeholder={`${t.mainImage} https://...`}
                     value={formData.image}
                     onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                     data-testid="input-product-image"
@@ -300,7 +304,7 @@ export function AdminPage() {
                     <Input
                       key={idx}
                       type="url"
-                      placeholder={`Additional image ${idx + 1} (optional) https://...`}
+                      placeholder={`${t.additionalImage} ${idx + 1} (optional) https://...`}
                       value={img}
                       onChange={(e) => {
                         const newImages = [...formData.images];
@@ -311,11 +315,11 @@ export function AdminPage() {
                     />
                   ))}
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">You can add up to 4 images total. At least the main image is required.</p>
+                <p className="text-xs text-muted-foreground mt-1">{t.imageHint}</p>
               </div>
 
               <div>
-                <label className="text-sm font-medium">Category *</label>
+                <label className="text-sm font-medium">{t.category} *</label>
                 <Select
                   value={formData.category}
                   onValueChange={(value) =>
@@ -340,9 +344,9 @@ export function AdminPage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium">Tags (comma-separated)</label>
+                <label className="text-sm font-medium">{t.tags}</label>
                 <Input
-                  placeholder="e.g., Organic, Vegan, Sugar-Free"
+                  placeholder={t.exampleTags}
                   value={formData.tags}
                   onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                   data-testid="input-product-tags"
@@ -358,7 +362,7 @@ export function AdminPage() {
                   data-testid="checkbox-in-stock"
                 />
                 <label htmlFor="inStock" className="text-sm font-medium">
-                  In Stock
+                  {t.inStock}
                 </label>
               </div>
 
@@ -369,10 +373,10 @@ export function AdminPage() {
                 data-testid="button-submit-product"
               >
                 {createMutation.isPending || updateMutation.isPending
-                  ? "Saving..."
+                  ? t.saving
                   : editingId
-                    ? "Update Product"
-                    : "Add Product"}
+                    ? t.updateProduct
+                    : t.addProduct}
               </Button>
             </form>
           </Card>
@@ -380,13 +384,13 @@ export function AdminPage() {
           {/* Products Table */}
           <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="font-semibold text-xl text-foreground">📦 Item List ({products.length})</h2>
+              <h2 className="font-semibold text-xl text-foreground">📦 {t.itemList} ({products.length})</h2>
             </div>
 
             <div className="space-y-3">
               {products.length === 0 ? (
                 <Card className="p-8 text-center">
-                  <p className="text-muted-foreground">No products found</p>
+                  <p className="text-muted-foreground">{t.noProducts}</p>
                 </Card>
               ) : (
                 products.map((product) => (
@@ -408,7 +412,7 @@ export function AdminPage() {
                         <div className="flex items-start justify-between gap-2 mb-3">
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-base truncate" data-testid={`text-name-${product.id}`}>
-                              {product.name}
+                              {getProductName(product.name, language)}
                             </h3>
                             <p className="text-sm text-gray-600 line-clamp-1">
                               {product.description}
@@ -425,13 +429,13 @@ export function AdminPage() {
                         {/* Price and Stock */}
                         <div className="flex flex-col gap-2">
                           <span className="text-lg font-bold" data-testid={`text-price-${product.id}`}>
-                            ${product.price}
+                            د.ج {product.price}
                           </span>
                           <Badge
                             variant={product.inStock ? "default" : "destructive"}
                             data-testid={`badge-stock-${product.id}`}
                           >
-                            {product.inStock ? "In Stock" : "Out of Stock"}
+                            {product.inStock ? t.inStock : t.outOfStock}
                           </Badge>
                         </div>
                       </div>
@@ -444,7 +448,7 @@ export function AdminPage() {
                           data-testid={`button-edit-${product.id}`}
                         >
                           <Edit2 className="h-4 w-4 md:mr-2" />
-                          <span className="hidden md:inline">Edit</span>
+                          <span className="hidden md:inline">{t.edit}</span>
                         </button>
                         <button
                           onClick={() => deleteMutation.mutate(product.id)}
@@ -453,7 +457,7 @@ export function AdminPage() {
                           data-testid={`button-delete-${product.id}`}
                         >
                           <Trash2 className="h-4 w-4 md:mr-2" />
-                          <span className="hidden md:inline">Delete</span>
+                          <span className="hidden md:inline">{t.delete}</span>
                         </button>
                       </div>
                     </div>

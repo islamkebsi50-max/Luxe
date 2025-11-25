@@ -200,23 +200,23 @@ export function HomePage({ products, onAddToCart }: HomePageProps) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Card className="p-8 text-center hover-elevate transition-all" data-testid="card-info-1">
               <div className="text-5xl mb-4">⭐</div>
-              <h3 className="font-semibold text-xl mb-3 text-foreground">Premium Quality</h3>
+              <h3 className="font-semibold text-xl mb-3 text-foreground">{t.premiumQuality}</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Hand-selected products from trusted sources around the world
+                {t.handSelectedProducts}
               </p>
             </Card>
             <Card className="p-8 text-center hover-elevate transition-all" data-testid="card-info-2">
               <div className="text-5xl mb-4">🚚</div>
-              <h3 className="font-semibold text-xl mb-3 text-foreground">Fast Delivery</h3>
+              <h3 className="font-semibold text-xl mb-3 text-foreground">{t.fastDelivery}</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Shipped to your doorstep within 2-3 business days
+                {t.shippedDoorstep}
               </p>
             </Card>
             <Card className="p-8 text-center hover-elevate transition-all" data-testid="card-info-3">
               <div className="text-5xl mb-4">✅</div>
-              <h3 className="font-semibold text-xl mb-3 text-foreground">100% Satisfaction</h3>
+              <h3 className="font-semibold text-xl mb-3 text-foreground">{t.satisfaction100}</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Guaranteed satisfaction or your money back
+                {t.satisfactionGuarantee}
               </p>
             </Card>
           </div>
@@ -226,14 +226,14 @@ export function HomePage({ products, onAddToCart }: HomePageProps) {
       {/* Newsletter */}
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-2xl">
-          <h2 className="font-serif text-4xl font-bold mb-4">Stay in the Loop</h2>
+          <h2 className="font-serif text-4xl font-bold mb-4">{t.stayInLoop}</h2>
           <p className="text-lg mb-8 opacity-90">
-            Subscribe to get special offers, free giveaways, and exclusive deals.
+            {t.subscribeOffer}
           </p>
           <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder={t.enterEmail}
               className="flex-1 px-4 py-3 rounded-md bg-white/20 backdrop-blur-sm border border-white/30 text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
               data-testid="input-newsletter"
             />
@@ -241,7 +241,7 @@ export function HomePage({ products, onAddToCart }: HomePageProps) {
               className="bg-white text-primary hover:bg-white/90 active-elevate-2"
               data-testid="button-subscribe"
             >
-              Subscribe
+              {t.subscribe}
             </Button>
           </div>
         </div>

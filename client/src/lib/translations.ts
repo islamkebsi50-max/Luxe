@@ -135,6 +135,20 @@ export const translations = {
     searchByProductName: "Search by product name or description...",
     clearAllFilters: "Clear All Filters",
 
+    // Feature Cards
+    premiumQuality: "Premium Quality",
+    handSelectedProducts: "Hand-selected products from trusted sources around the world",
+    fastDelivery: "Fast Delivery",
+    shippedDoorstep: "Shipped to your doorstep within 2-3 business days",
+    satisfaction100: "100% Satisfaction",
+    satisfactionGuarantee: "Guaranteed satisfaction or your money back",
+
+    // Newsletter
+    stayInLoop: "Stay in the Loop",
+    subscribeOffer: "Subscribe to get special offers, free giveaways, and exclusive deals.",
+    enterEmail: "Enter your email",
+    subscribe: "Subscribe",
+
     // Common
     price: "Price",
     contact: "Contact",
@@ -245,6 +259,20 @@ export const translations = {
     found: "موجود",
     searchByProductName: "ابحث حسب اسم المنتج أو الوصف...",
     clearAllFilters: "مسح جميع المرشحات",
+
+    // Feature Cards
+    premiumQuality: "جودة متميزة",
+    handSelectedProducts: "منتجات منتقاة بعناية من مصادر موثوقة حول العالم",
+    fastDelivery: "توصيل سريع",
+    shippedDoorstep: "يتم التسليم إلى عتبة داركم خلال 2-3 أيام عمل",
+    satisfaction100: "رضا 100%",
+    satisfactionGuarantee: "رضا مضمون أو استرجاع أموالك",
+
+    // Newsletter
+    stayInLoop: "ابقى على اطلاع",
+    subscribeOffer: "اشترك للحصول على عروض خاصة وهدايا مجانية وصفقات حصرية.",
+    enterEmail: "أدخل بريدك الإلكتروني",
+    subscribe: "اشترك",
 
     // Common
     price: "السعر",

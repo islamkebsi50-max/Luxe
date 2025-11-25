@@ -15,6 +15,7 @@ import { ProductListingPage } from "@/pages/ProductListingPage";
 import { ProductDetailPage } from "@/pages/ProductDetailPage";
 import { CheckoutPage } from "@/pages/CheckoutPage";
 import { AdminPage } from "@/pages/AdminPage";
+import { ProductInventoryPage } from "@/pages/ProductInventoryPage";
 import { AdminLayout } from "@/components/AdminLayout";
 import NotFound from "@/pages/not-found";
 import type { Product, CartItem } from "@shared/schema";
@@ -117,6 +118,11 @@ function AppContent() {
         <Route path="/admin-panel-secret">
           <AdminLayout>
             <AdminPage />
+          </AdminLayout>
+        </Route>
+        <Route path="/admin-inventory">
+          <AdminLayout>
+            <ProductInventoryPage />
           </AdminLayout>
         </Route>
         <Route path="/admin">

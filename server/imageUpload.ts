@@ -6,8 +6,11 @@ export async function uploadImageToImgbb(
 ): Promise<string> {
   const apiKey = process.env.IMGBB_API_KEY;
 
+  // If no API key, create a data URL for development
   if (!apiKey) {
-    throw new Error("IMGBB_API_KEY is not configured");
+    console.warn("IMGBB_API_KEY not configured, creating local data URL");
+    const base64 = imageBuffer.toString("base64");
+    return `data:image/jpeg;base64,${base64}`;
   }
 
   const formData = new FormData();
@@ -21,7 +24,9 @@ export async function uploadImageToImgbb(
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to upload image: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error("imgbb error response:", response.status, errorText);
+      throw new Error(`Failed to upload image: ${response.statusText} - ${errorText}`);
     }
 
     const data: any = await response.json();

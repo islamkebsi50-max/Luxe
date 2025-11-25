@@ -13,19 +13,24 @@ const upload = multer({ storage: multer.memoryStorage() });
 let storage: IStorage;
 
 async function initializeStorage() {
-  // Try to use Firestore if configured, otherwise fall back to memory storage
-  const hasFirebaseConfig = process.env.FIREBASE_PROJECT_ID;
+  // Try to use Firestore if ALL required credentials are configured
+  const hasCompleteFirebaseConfig = 
+    process.env.FIREBASE_PROJECT_ID &&
+    process.env.FIREBASE_PRIVATE_KEY &&
+    process.env.FIREBASE_CLIENT_EMAIL;
   
-  if (hasFirebaseConfig) {
+  if (hasCompleteFirebaseConfig) {
     try {
       const { FirestoreStorage } = await import("./firestoreStorage");
       storage = new FirestoreStorage();
+      console.log("Using Firestore storage for products");
     } catch (error) {
-      console.warn("Failed to initialize Firestore, falling back to memory storage");
+      console.warn("Failed to initialize Firestore, falling back to memory storage:", error);
       storage = new MemoryStorage();
     }
   } else {
     // Use memory storage by default in development
+    console.log("Using memory storage for products (no Firebase credentials configured)");
     storage = new MemoryStorage();
   }
 }

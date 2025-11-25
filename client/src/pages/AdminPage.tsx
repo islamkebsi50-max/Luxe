@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -103,12 +103,35 @@ export function AdminPage() {
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageBase64, setImageBase64] = useState<string>("");
-
+  const [, setLocation] = useLocation();
 
   // Fetch products
   const { data: products = [] } = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
+
+  // Load product from URL parameter for editing
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const editId = params.get("edit");
+    
+    if (editId && products.length > 0) {
+      const product = products.find((p) => p.id === editId);
+      if (product) {
+        setEditingId(editId);
+        setFormData({
+          name: product.name,
+          description: product.description,
+          price: product.price.toString(),
+          image: product.image,
+          category: product.category,
+          inStock: product.inStock,
+          tags: product.tags.join(", "),
+        });
+        setImagePreview(product.image);
+      }
+    }
+  }, [products]);
 
   // Create product mutation
   const createMutation = useMutation({
@@ -260,8 +283,6 @@ export function AdminPage() {
       createMutation.mutate(formData);
     }
   };
-
-  const [, setLocation] = useLocation();
 
   return (
     <div className="min-h-screen bg-background p-8">

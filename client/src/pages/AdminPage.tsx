@@ -26,7 +26,7 @@ export function AdminPage() {
     price: "",
     image: "",
     images: ["", "", "", ""] as string[], // up to 4 additional images
-    category: "food" as "food" | "cosmetic",
+    category: "Food" as string,
     inStock: true,
     tags: "" as string, // comma-separated tags
   });
@@ -132,7 +132,7 @@ export function AdminPage() {
       price: "",
       image: "",
       images: ["", "", "", ""],
-      category: "food",
+      category: "Food",
       inStock: true,
       tags: "",
     });
@@ -149,7 +149,7 @@ export function AdminPage() {
       price: product.price,
       image: primary || product.image,
       images: additionalImages,
-      category: product.category.toLowerCase() as "food" | "cosmetic",
+      category: product.category,
       inStock: product.inStock,
       tags: (product.tags || []).join(", "),
     });
@@ -175,17 +175,26 @@ export function AdminPage() {
     }
   };
 
-  const isFood = (category: string) => category.toLowerCase() === "food";
-  const categoryColor = isFood(formData.category)
-    ? "bg-green-100 text-green-800"
-    : "bg-amber-100 text-amber-800";
+  const getCategoryColor = (category: string) => {
+    const cat = category.toLowerCase();
+    if (["food", "nuts", "grains", "spices", "dried fruits", "organic products"].includes(cat)) {
+      return "bg-green-100 text-green-800";
+    }
+    return "bg-amber-100 text-amber-800";
+  };
+
+  const categoryColor = getCategoryColor(formData.category);
 
   // Calculate inventory stats
   const totalProducts = products.length;
   const inStockCount = products.filter((p) => p.inStock).length;
   const outOfStockCount = products.filter((p) => !p.inStock).length;
-  const foodCount = products.filter((p) => p.category.toLowerCase() === "food").length;
-  const cosmeticCount = products.filter((p) => p.category.toLowerCase() === "cosmetic").length;
+  const foodCount = products.filter((p) => 
+    ["food", "nuts", "grains", "spices", "dried fruits", "organic products"].includes(p.category.toLowerCase())
+  ).length;
+  const cosmeticCount = products.filter((p) => 
+    ["cosmetics", "skincare", "supplements"].includes(p.category.toLowerCase())
+  ).length;
 
   return (
     <div className="min-h-screen bg-background p-8">
@@ -310,15 +319,22 @@ export function AdminPage() {
                 <Select
                   value={formData.category}
                   onValueChange={(value) =>
-                    setFormData({ ...formData, category: value as "food" | "cosmetic" })
+                    setFormData({ ...formData, category: value })
                   }
                 >
                   <SelectTrigger data-testid="select-product-category">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="food">Food</SelectItem>
-                    <SelectItem value="cosmetic">Cosmetics</SelectItem>
+                    <SelectItem value="Food">Food</SelectItem>
+                    <SelectItem value="Nuts">Nuts</SelectItem>
+                    <SelectItem value="Grains">Grains</SelectItem>
+                    <SelectItem value="Spices">Spices</SelectItem>
+                    <SelectItem value="Dried Fruits">Dried Fruits</SelectItem>
+                    <SelectItem value="Organic Products">Organic Products</SelectItem>
+                    <SelectItem value="Cosmetics">Cosmetics</SelectItem>
+                    <SelectItem value="Skincare">Skincare</SelectItem>
+                    <SelectItem value="Supplements">Supplements</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -399,7 +415,7 @@ export function AdminPage() {
                             </p>
                           </div>
                           <Badge
-                            className={`flex-shrink-0 ${isFood(product.category) ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"}`}
+                            className={`flex-shrink-0 ${getCategoryColor(product.category)}`}
                             data-testid={`badge-category-${product.id}`}
                           >
                             {product.category}

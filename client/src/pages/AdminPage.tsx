@@ -126,7 +126,7 @@ export function AdminPage() {
           image: product.image,
           category: product.category,
           inStock: product.inStock,
-          tags: product.tags.join(", "),
+          tags: (product.tags || []).join(", "),
         });
         setImagePreview(product.image);
       }

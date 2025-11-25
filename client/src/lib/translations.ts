@@ -131,7 +131,6 @@ export const translations = {
     allProducts: "All Products",
     searchResultsFor: "Search results for",
     product: "product",
-    products: "products",
     found: "found",
     searchByProductName: "Search by product name or description...",
     clearAllFilters: "Clear All Filters",

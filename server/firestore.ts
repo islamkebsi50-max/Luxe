@@ -22,9 +22,14 @@ export function initializeFirestore(): Firestore {
     const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
 
     if (privateKey && clientEmail) {
+      // Convert escaped newlines in private key if needed
+      const formattedPrivateKey = privateKey.includes('\\n') 
+        ? privateKey.replace(/\\n/g, '\n') 
+        : privateKey;
+      
       const serviceAccount = {
         projectId,
-        privateKey,
+        privateKey: formattedPrivateKey,
         clientEmail,
       };
 

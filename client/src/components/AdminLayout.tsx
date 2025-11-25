@@ -12,7 +12,7 @@ interface AdminLayoutProps {
 export function AdminLayout({ children }: AdminLayoutProps) {
   const [location] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { language } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const t = translations[language];
 
   return (
@@ -32,7 +32,15 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           )}
         </Button>
         <h1 className="font-serif text-xl font-bold">{t.admin}</h1>
-        <div className="w-10" /> {/* Spacer for centering */}
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => setLanguage(language === "en" ? "ar" : "en")}
+          className="text-xs"
+          data-testid="button-toggle-language"
+        >
+          {language === "en" ? "العربية" : "English"}
+        </Button>
       </div>
 
       {/* Mobile Overlay */}
@@ -75,7 +83,15 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </Link>
         </nav>
 
-        <div className="p-6 border-t">
+        <div className="p-6 border-t space-y-3">
+          <Button
+            variant="outline"
+            className="w-full justify-start hover-elevate text-foreground"
+            onClick={() => setLanguage(language === "en" ? "ar" : "en")}
+            data-testid="button-toggle-language-sidebar"
+          >
+            {language === "en" ? "العربية" : "English"}
+          </Button>
           <Link href="/">
             <Button
               variant="outline"

@@ -88,6 +88,17 @@ export const translations = {
     allRightsReserved: "© 2024 LUXE. All rights reserved.",
     premiumProducts: "Premium products with modern design and timeless quality. Elevate your everyday.",
 
+    // Home Page
+    premiumSelection: "Premium Selection",
+    discoverOurCurated: "Discover our curated collection of the finest organic products and cosmetics from around the world",
+    browseByCategory: "Browse by Category",
+    featuredBundles: "Featured Bundles",
+    handpickedCombinations: "Handpicked product combinations at incredible savings",
+    bestSellersBundle: "Best Sellers Bundle",
+    ourMostPopular: "Our most popular product combinations",
+    youSave: "You save",
+    buyBundle: "Buy Bundle",
+
     // Common
     price: "Price",
     contact: "Contact",
@@ -180,6 +191,17 @@ export const translations = {
     termsOfService: "شروط الخدمة",
     allRightsReserved: "© 2024 LUXE. جميع الحقوق محفوظة.",
     premiumProducts: "منتجات متميزة بتصميم حديث وجودة أبدية. ارفع مستوى حياتك اليومية.",
+
+    // Home Page
+    premiumSelection: "اختيار متميز",
+    discoverOurCurated: "اكتشف مجموعتنا المنتقاة بعناية من أفضل المنتجات العضوية ومستحضرات العناية من حول العالم",
+    browseByCategory: "تصفح حسب الفئة",
+    featuredBundles: "الحزم المميزة",
+    handpickedCombinations: "مزيج من المنتجات المنتقاة بعناية بأسعار لا تصدق",
+    bestSellersBundle: "حزمة الأكثر مبيعاً",
+    ourMostPopular: "أكثر مزيج منتجاتنا شهرة",
+    youSave: "توفير",
+    buyBundle: "شراء الحزمة",
 
     // Common
     price: "السعر",

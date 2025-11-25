@@ -84,10 +84,10 @@ export function HomePage({ products, onAddToCart }: HomePageProps) {
         <div className="relative z-20 container mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
           <div className="max-w-2xl">
             <h1 className="font-serif text-5xl md:text-7xl font-bold text-white mb-6" data-testid="text-hero-title">
-              Premium Selection
+              {t.premiumSelection}
             </h1>
             <p className="text-xl text-white/90 mb-8 leading-relaxed">
-              Discover our curated collection of the finest organic products and cosmetics from around the world
+              {t.discoverOurCurated}
             </p>
             <Link href="/products">
               <Button
@@ -118,7 +118,7 @@ export function HomePage({ products, onAddToCart }: HomePageProps) {
       {/* Category Selection Section */}
       <section className={`py-16 border-b transition-colors ${selectedCategoryInfo?.color}`}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl font-bold mb-8 text-foreground">{t.categories}</h2>
+          <h2 className="font-serif text-3xl font-bold mb-8 text-foreground">{t.browseByCategory}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {categories.map((category) => (
               <Button
@@ -164,9 +164,9 @@ export function HomePage({ products, onAddToCart }: HomePageProps) {
         <section className="py-20 bg-gradient-to-br from-slate-100 to-blue-100 dark:from-slate-800 dark:to-blue-900">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center">
-              <h2 className="font-serif text-4xl font-bold mb-3 text-foreground">Featured Bundles</h2>
+              <h2 className="font-serif text-4xl font-bold mb-3 text-foreground">{t.featuredBundles}</h2>
               <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Handpicked product combinations at incredible savings
+                {t.handpickedCombinations}
               </p>
             </div>
 

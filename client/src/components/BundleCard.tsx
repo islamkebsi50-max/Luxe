@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Zap } from "lucide-react";
 import type { Product } from "@shared/schema";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 interface BundleCardProps {
   bundleName: string;
@@ -23,6 +25,9 @@ export function BundleCard({
   discount,
   onAddToCart,
 }: BundleCardProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+  
   const individualPrice =
     parseFloat(product1.price) + parseFloat(product2.price);
   const savings = individualPrice - bundlePrice;
@@ -103,7 +108,7 @@ export function BundleCard({
           </div>
           <div className="text-right">
             <p className="text-sm text-green-600 font-semibold">
-              You save ${savings.toFixed(2)}
+              {t.youSave} ${savings.toFixed(2)}
             </p>
           </div>
         </div>
@@ -114,7 +119,7 @@ export function BundleCard({
           data-testid={`button-buy-bundle-${product1.id}`}
         >
           <ShoppingCart className="h-4 w-4 mr-2" />
-          Buy Bundle
+          {t.buyBundle}
         </Button>
       </div>
     </Card>

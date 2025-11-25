@@ -16,8 +16,16 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
 
   const navLinks = [
     { label: "Home", href: "/", id: "home" },
-    { label: "Food", href: "/products?category=food", id: "food" },
-    { label: "Cosmetics", href: "/products?category=cosmetic", id: "cosmetics" },
+    { label: "Shop All", href: "/products", id: "shop" },
+  ];
+
+  const categories = [
+    { label: "Nuts", href: "/products?category=Nuts", id: "nuts" },
+    { label: "Grains", href: "/products?category=Grains", id: "grains" },
+    { label: "Spices", href: "/products?category=Spices", id: "spices" },
+    { label: "Dried Fruits", href: "/products?category=Dried Fruits", id: "dried-fruits" },
+    { label: "Organic Products", href: "/products?category=Organic Products", id: "organic" },
+    { label: "Cosmetics", href: "/products?category=Cosmetics", id: "cosmetics" },
   ];
 
   const getNavButtonClass = (href: string, id: string) => {
@@ -28,13 +36,16 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
     }
 
     // Active state styling based on category
-    if (id === "food") {
-      return "bg-green-600 text-white hover:bg-green-700 hover-elevate";
-    } else if (id === "cosmetics") {
-      return "bg-amber-600 text-white hover:bg-amber-700 hover-elevate";
-    }
+    const colorMap: Record<string, string> = {
+      nuts: "bg-amber-600 text-white hover:bg-amber-700",
+      grains: "bg-yellow-600 text-white hover:bg-yellow-700",
+      spices: "bg-red-600 text-white hover:bg-red-700",
+      "dried-fruits": "bg-purple-600 text-white hover:bg-purple-700",
+      organic: "bg-green-600 text-white hover:bg-green-700",
+      cosmetics: "bg-pink-600 text-white hover:bg-pink-700",
+    };
     
-    return "hover-elevate text-foreground";
+    return (colorMap[id] || "hover-elevate text-foreground") + " hover-elevate";
   };
 
   return (
@@ -48,16 +59,15 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-64">
+            <SheetContent side="left" className="w-72 overflow-y-auto">
               <nav className="flex flex-col gap-2 mt-8">
+                {/* Main Navigation */}
                 {navLinks.map((link) => {
                   const isActive = location === link.href || (link.href === "/" && location === "/");
-                  let buttonClass = "w-full justify-start text-base hover-elevate";
+                  let buttonClass = "w-full justify-start text-base hover-elevate font-semibold";
                   
-                  if (isActive && link.id === "food") {
-                    buttonClass += " bg-green-600 text-white";
-                  } else if (isActive && link.id === "cosmetics") {
-                    buttonClass += " bg-amber-600 text-white";
+                  if (isActive) {
+                    buttonClass += " bg-primary text-primary-foreground";
                   }
                   
                   return (
@@ -68,6 +78,37 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
                         data-testid={`link-${link.label.toLowerCase()}`}
                       >
                         {link.label}
+                      </Button>
+                    </Link>
+                  );
+                })}
+
+                {/* Category Divider */}
+                <div className="my-4 px-3 border-t pt-4">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">Categories</p>
+                </div>
+
+                {/* Categories */}
+                {categories.map((category) => {
+                  const isActive = location.includes(`category=${category.id === "dried-fruits" ? "Dried Fruits" : category.id === "organic" ? "Organic Products" : category.label}`);
+                  
+                  const colorMap: Record<string, string> = {
+                    nuts: "border-l-4 border-l-amber-600",
+                    grains: "border-l-4 border-l-yellow-600",
+                    spices: "border-l-4 border-l-red-600",
+                    "dried-fruits": "border-l-4 border-l-purple-600",
+                    organic: "border-l-4 border-l-green-600",
+                    cosmetics: "border-l-4 border-l-pink-600",
+                  };
+                  
+                  return (
+                    <Link key={category.href} href={category.href}>
+                      <Button
+                        variant="ghost"
+                        className={`w-full justify-start pl-3 hover-elevate ${isActive ? "bg-secondary" : ""} ${colorMap[category.id]}`}
+                        data-testid={`link-${category.id}`}
+                      >
+                        {category.label}
                       </Button>
                     </Link>
                   );
@@ -93,6 +134,19 @@ export function Header({ cartItemCount, onCartClick, onSearchChange }: HeaderPro
                   data-testid={`link-${link.label.toLowerCase()}`}
                 >
                   {link.label}
+                </Button>
+              </Link>
+            ))}
+            
+            {/* Desktop Categories */}
+            {categories.map((category) => (
+              <Link key={category.href} href={category.href}>
+                <Button
+                  variant="ghost"
+                  className={getNavButtonClass(category.href, category.id)}
+                  data-testid={`link-${category.id}`}
+                >
+                  {category.label}
                 </Button>
               </Link>
             ))}

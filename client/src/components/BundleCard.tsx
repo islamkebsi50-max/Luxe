@@ -68,7 +68,7 @@ export function BundleCard({
             {product1.name}
           </p>
           <p className="text-xs text-muted-foreground">
-            ${product1.price}
+            د.ج {product1.price}
           </p>
         </div>
 
@@ -90,7 +90,7 @@ export function BundleCard({
             {product2.name}
           </p>
           <p className="text-xs text-muted-foreground">
-            ${product2.price}
+            د.ج {product2.price}
           </p>
         </div>
       </div>
@@ -100,15 +100,15 @@ export function BundleCard({
         <div className="flex items-center justify-between mb-4">
           <div>
             <p className="text-xs text-muted-foreground line-through">
-              ${individualPrice.toFixed(2)}
+              د.ج {individualPrice.toFixed(2)}
             </p>
             <p className="text-3xl font-bold text-foreground">
-              ${bundlePrice.toFixed(2)}
+              د.ج {bundlePrice.toFixed(2)}
             </p>
           </div>
           <div className="text-right">
             <p className="text-sm text-green-600 font-semibold">
-              {t.youSave} ${savings.toFixed(2)}
+              {t.youSave} د.ج {savings.toFixed(2)}
             </p>
           </div>
         </div>

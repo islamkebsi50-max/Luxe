@@ -93,7 +93,7 @@ export function CartDrawer({
                       {item.product.name}
                     </h4>
                     <p className="text-sm text-muted-foreground mb-2">
-                      ${parseFloat(item.product.price).toFixed(2)}
+                      د.ج {parseFloat(item.product.price).toFixed(2)}
                     </p>
 
                     {/* Quantity Controls */}
@@ -134,7 +134,7 @@ export function CartDrawer({
                       <Trash2 className="h-4 w-4" />
                     </Button>
                     <span className="font-bold text-sm text-foreground" data-testid={`text-item-total-${item.id}`}>
-                      ${(parseFloat(item.product.price) * item.quantity).toFixed(2)}
+                      د.ج {(parseFloat(item.product.price) * item.quantity).toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -147,23 +147,23 @@ export function CartDrawer({
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">{t.subtotal}</span>
-                  <span className="font-medium" data-testid="text-subtotal">${subtotal.toFixed(2)}</span>
+                  <span className="font-medium" data-testid="text-subtotal">د.ج {subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">{t.shipping}</span>
                   <span className={`font-medium ${shipping === 0 ? "text-green-600" : ""}`} data-testid="text-shipping">
-                    {shipping === 0 ? t.free : `$${shipping.toFixed(2)}`}
+                    {shipping === 0 ? t.free : `د.ج ${shipping.toFixed(2)}`}
                   </span>
                 </div>
                 {subtotal > 0 && subtotal < 100 && (
                   <p className="text-xs text-amber-600 bg-amber-50 dark:bg-amber-900/20 p-2 rounded">
-                    Add ${(100 - subtotal).toFixed(2)} more for free shipping!
+                    أضف د.ج {(100 - subtotal).toFixed(2)} أكثر للشحن المجاني!
                   </p>
                 )}
                 <Separator className="my-2" />
                 <div className="flex justify-between font-bold text-base">
                   <span className="text-foreground">{t.total}</span>
-                  <span className="text-primary text-lg" data-testid="text-total">${total.toFixed(2)}</span>
+                  <span className="text-primary text-lg" data-testid="text-total">د.ج {total.toFixed(2)}</span>
                 </div>
               </div>
 

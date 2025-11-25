@@ -138,11 +138,11 @@ export function ProductDetailPage({
 
             <div className="flex items-baseline gap-3">
               <span className="text-4xl font-bold" data-testid="text-price">
-                ${product.price}
+                د.ج {product.price}
               </span>
               {hasDiscount && (
                 <span className="text-2xl text-muted-foreground line-through">
-                  ${product.originalPrice}
+                  د.ج {product.originalPrice}
                 </span>
               )}
             </div>

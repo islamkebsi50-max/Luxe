@@ -247,7 +247,7 @@ export function CheckoutPage({ cartItems, onPlaceOrder }: CheckoutPageProps) {
                     className="w-full"
                     data-testid="button-place-order"
                   >
-                    Place Order - ${total.toFixed(2)}
+                    Place Order - د.ج {total.toFixed(2)}
                   </Button>
                 </form>
               </Form>
@@ -278,7 +278,7 @@ export function CheckoutPage({ cartItems, onPlaceOrder }: CheckoutPageProps) {
                       </p>
                     </div>
                     <div className="font-medium text-sm">
-                      ${(parseFloat(item.product.price) * item.quantity).toFixed(2)}
+                      د.ج {(parseFloat(item.product.price) * item.quantity).toFixed(2)}
                     </div>
                   </div>
                 ))}
@@ -289,28 +289,28 @@ export function CheckoutPage({ cartItems, onPlaceOrder }: CheckoutPageProps) {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span data-testid="text-checkout-subtotal">${subtotal.toFixed(2)}</span>
+                  <span data-testid="text-checkout-subtotal">د.ج {subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Shipping</span>
                   <span data-testid="text-checkout-shipping">
-                    {shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
+                    {shipping === 0 ? "FREE" : `د.ج ${shipping.toFixed(2)}`}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Tax</span>
-                  <span data-testid="text-checkout-tax">${tax.toFixed(2)}</span>
+                  <span data-testid="text-checkout-tax">د.ج {tax.toFixed(2)}</span>
                 </div>
                 <Separator className="my-2" />
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span data-testid="text-checkout-total">${total.toFixed(2)}</span>
+                  <span data-testid="text-checkout-total">د.ج {total.toFixed(2)}</span>
                 </div>
               </div>
 
               {subtotal > 0 && subtotal < 100 && (
                 <p className="text-xs text-muted-foreground mt-4">
-                  Add ${(100 - subtotal).toFixed(2)} more for free shipping!
+                  أضف د.ج {(100 - subtotal).toFixed(2)} أكثر للشحن المجاني!
                 </p>
               )}
             </Card>

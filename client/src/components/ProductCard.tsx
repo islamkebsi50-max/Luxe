@@ -91,11 +91,11 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="text-2xl font-bold text-foreground" data-testid={`text-price-${product.id}`}>
-              ${product.price}
+              د.ج {product.price}
             </span>
             {hasDiscount && (
               <span className="text-sm text-muted-foreground line-through">
-                ${product.originalPrice}
+                د.ج {product.originalPrice}
               </span>
             )}
           </div>

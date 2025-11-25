@@ -4,7 +4,6 @@ import type { IStorage } from "./storage";
 import { insertCartItemSchema, insertOrderSchema } from "@shared/schema";
 import { z } from "zod";
 import { randomUUID } from "crypto";
-import { MemoryStorage } from "./memoryStorage";
 import multer from "multer";
 import { uploadImageToImgbb } from "./imageUpload";
 
@@ -13,25 +12,23 @@ const upload = multer({ storage: multer.memoryStorage() });
 let storage: IStorage;
 
 async function initializeStorage() {
-  // Try to use Firestore if ALL required credentials are configured
-  const hasCompleteFirebaseConfig = 
-    process.env.FIREBASE_PROJECT_ID &&
-    process.env.FIREBASE_PRIVATE_KEY &&
-    process.env.FIREBASE_CLIENT_EMAIL;
-  
-  if (hasCompleteFirebaseConfig) {
-    try {
-      const { FirestoreStorage } = await import("./firestoreStorage");
-      storage = new FirestoreStorage();
-      console.log("Using Firestore storage for products");
-    } catch (error) {
-      console.warn("Failed to initialize Firestore, falling back to memory storage:", error);
-      storage = new MemoryStorage();
-    }
-  } else {
-    // Use memory storage by default in development
-    console.log("Using memory storage for products (no Firebase credentials configured)");
-    storage = new MemoryStorage();
+  // Require Firebase credentials - no fallback to memory storage
+  const projectId = process.env.FIREBASE_PROJECT_ID;
+  const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+
+  if (!projectId || !privateKey || !clientEmail) {
+    throw new Error(
+      "Firebase credentials are required. Please set FIREBASE_PROJECT_ID, FIREBASE_PRIVATE_KEY, and FIREBASE_CLIENT_EMAIL environment variables."
+    );
+  }
+
+  try {
+    const { FirestoreStorage } = await import("./firestoreStorage");
+    storage = new FirestoreStorage();
+    console.log("Using Firestore storage for products");
+  } catch (error) {
+    throw new Error(`Failed to initialize Firestore: ${error}`);
   }
 }
 

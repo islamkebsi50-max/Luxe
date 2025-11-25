@@ -15,6 +15,7 @@ export const getCategoryName = (categoryKey: string, language: "en" | "ar"): str
 export const getTagName = (tag: string, language: "en" | "ar"): string => {
   const tagMap: Record<string, Record<"en" | "ar", string>> = {
     Natural: { en: "Natural", ar: "طبيعي" },
+    "All-Natural": { en: "All-Natural", ar: "طبيعي بالكامل" },
     Organic: { en: "Organic", ar: "عضوي" },
     Raw: { en: "Raw", ar: "خام" },
     Vegan: { en: "Vegan", ar: "نباتي" },
@@ -22,7 +23,7 @@ export const getTagName = (tag: string, language: "en" | "ar"): string => {
     "Non-GMO": { en: "Non-GMO", ar: "خالي من الكائنات المعدلة وراثياً" },
     Premium: { en: "Premium", ar: "مميز" },
     "Fair Trade": { en: "Fair Trade", ar: "تجارة عادلة" },
-    Cruelty: { en: "Cruelty Free", ar: "خالي من الاختبار على الحيوانات" },
+    "Cruelty Free": { en: "Cruelty Free", ar: "خالي من الاختبار على الحيوانات" },
   };
   return tagMap[tag]?.[language] || tag;
 };

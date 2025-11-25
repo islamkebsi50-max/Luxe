@@ -1,9 +1,11 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { FirestoreStorage } from "./storage";
 import { insertCartItemSchema, insertOrderSchema } from "@shared/schema";
 import { z } from "zod";
 import { randomUUID } from "crypto";
+
+const storage = new FirestoreStorage();
 
 const addToCartSchema = z.object({
   productId: z.string().min(1, "Product ID is required"),
@@ -276,6 +278,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: "Failed to delete product" });
+    }
+  });
+
+  // Image upload endpoint
+  app.post("/api/admin/upload-image", async (req, res) => {
+    try {
+      const { imageUrl } = req.body;
+      if (!imageUrl) {
+        return res.status(400).json({ error: "Image URL is required" });
+      }
+
+      const { uploadImageFromUrl } = await import("./imageUpload");
+      const uploadedUrl = await uploadImageFromUrl(imageUrl);
+      res.json({ url: uploadedUrl });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to upload image" });
     }
   });
 

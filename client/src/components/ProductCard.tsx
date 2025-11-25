@@ -5,7 +5,7 @@ import { Star, ShoppingCart } from "lucide-react";
 import { Link } from "wouter";
 import type { Product } from "@shared/schema";
 import { useLanguage } from "@/lib/LanguageContext";
-import { translations } from "@/lib/translations";
+import { translations, getTagName } from "@/lib/translations";
 
 interface ProductCardProps {
   product: Product;
@@ -62,7 +62,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
                   className="bg-blue-500 text-white text-xs px-2 py-1 truncate"
                   data-testid={`badge-tag-${product.id}-${index}`}
                 >
-                  {tag}
+                  {getTagName(tag, language)}
                 </Badge>
               ))}
             </div>

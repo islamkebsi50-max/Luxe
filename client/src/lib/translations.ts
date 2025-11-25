@@ -11,6 +11,22 @@ export const getCategoryName = (categoryKey: string, language: "en" | "ar"): str
   return categoryMap[categoryKey]?.[language] || categoryKey;
 };
 
+// Helper to get translated tag name
+export const getTagName = (tag: string, language: "en" | "ar"): string => {
+  const tagMap: Record<string, Record<"en" | "ar", string>> = {
+    Natural: { en: "Natural", ar: "طبيعي" },
+    Organic: { en: "Organic", ar: "عضوي" },
+    Raw: { en: "Raw", ar: "خام" },
+    Vegan: { en: "Vegan", ar: "نباتي" },
+    "Gluten Free": { en: "Gluten Free", ar: "خالي من الغلوتين" },
+    "Non-GMO": { en: "Non-GMO", ar: "خالي من الكائنات المعدلة وراثياً" },
+    Premium: { en: "Premium", ar: "مميز" },
+    "Fair Trade": { en: "Fair Trade", ar: "تجارة عادلة" },
+    Cruelty: { en: "Cruelty Free", ar: "خالي من الاختبار على الحيوانات" },
+  };
+  return tagMap[tag]?.[language] || tag;
+};
+
 export const translations = {
   en: {
     // Navigation
@@ -111,6 +127,13 @@ export const translations = {
     ourMostPopular: "Our most popular product combinations",
     youSave: "You save",
     buyBundle: "Buy Bundle",
+    allProducts: "All Products",
+    searchResultsFor: "Search results for",
+    product: "product",
+    products: "products",
+    found: "found",
+    searchByProductName: "Search by product name or description...",
+    clearAllFilters: "Clear All Filters",
 
     // Common
     price: "Price",
@@ -215,6 +238,13 @@ export const translations = {
     ourMostPopular: "أكثر مزيج منتجاتنا شهرة",
     youSave: "توفير",
     buyBundle: "شراء الحزمة",
+    allProducts: "جميع المنتجات",
+    searchResultsFor: "نتائج البحث عن",
+    product: "منتج",
+    products: "منتجات",
+    found: "موجود",
+    searchByProductName: "ابحث حسب اسم المنتج أو الوصف...",
+    clearAllFilters: "مسح جميع المرشحات",
 
     // Common
     price: "السعر",

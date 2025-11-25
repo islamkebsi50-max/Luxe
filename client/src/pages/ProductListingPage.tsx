@@ -155,7 +155,7 @@ export function ProductListingPage({
           }}
           data-testid="button-clear-filters"
         >
-          Clear All Filters
+          {t.clearAllFilters}
         </Button>
       )}
     </div>
@@ -169,10 +169,10 @@ export function ProductListingPage({
         {/* Page Header */}
         <div className="mb-10">
           <h1 className="font-serif text-4xl font-bold mb-2 text-foreground" data-testid="text-page-title">
-            {activeSearch ? `Search results for "${activeSearch}"` : "All Products"}
+            {activeSearch ? `${t.searchResultsFor} "${activeSearch}"` : t.allProducts}
           </h1>
           <p className="text-muted-foreground text-lg">
-            {filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"} found
+            {filteredProducts.length} {filteredProducts.length === 1 ? t.product : t.products} {t.found}
           </p>
         </div>
 
@@ -182,7 +182,7 @@ export function ProductListingPage({
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
             <Input
               type="search"
-              placeholder="Search by product name or description..."
+              placeholder={t.searchByProductName}
               value={localSearchQuery}
               onChange={(e) => setLocalSearchQuery(e.target.value)}
               className="pl-12 pr-10 py-6 text-base rounded-lg border-2 focus-visible:ring-2 focus-visible:ring-primary"
@@ -205,7 +205,7 @@ export function ProductListingPage({
           {/* Desktop Filters */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
             <Card className="p-6 sticky top-24">
-              <h2 className="font-semibold text-lg mb-6">Filters</h2>
+              <h2 className="font-semibold text-lg mb-6">{t.filters}</h2>
               <FilterContent />
             </Card>
           </aside>
@@ -224,7 +224,7 @@ export function ProductListingPage({
                   >
                     <SlidersHorizontal className="h-4 w-4 mr-2" />
                     {t.filters}
-                    {hasActiveFilters && <span className="ml-2 text-xs font-bold bg-primary text-primary-foreground px-2 py-1 rounded-full">Active</span>}
+                    {hasActiveFilters && <span className="ml-2 text-xs font-bold bg-primary text-primary-foreground px-2 py-1 rounded-full">{t.sortBy}</span>}
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="w-80">

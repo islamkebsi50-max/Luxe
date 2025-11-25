@@ -221,12 +221,13 @@ export function AdminPage() {
         return newPreviews;
       });
 
+      // Mark that an image was selected by setting a placeholder value
       if (index === 0) {
-        setFormData((prev) => ({ ...prev, image: preview }));
+        setFormData((prev) => ({ ...prev, image: "image-selected" }));
       } else {
         setFormData((prev) => {
           const newImages = [...prev.images];
-          newImages[index - 1] = preview;
+          newImages[index - 1] = "image-selected";
           return { ...prev, images: newImages };
         });
       }

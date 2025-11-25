@@ -354,7 +354,7 @@ export function AdminPage() {
                   placeholder={t.exampleDescription}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-md text-sm"
+                  className="w-full px-3 py-2 border border-input rounded-md text-sm bg-background text-foreground"
                   rows={3}
                   data-testid="input-product-description"
                 />
@@ -464,9 +464,9 @@ export function AdminPage() {
                 </Card>
               ) : (
                 products.map((product) => (
-                  <div key={product.id} className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row mb-4" data-testid={`card-product-${product.id}`}>
+                  <Card key={product.id} className="overflow-hidden flex flex-col md:flex-row hover-elevate transition-all" data-testid={`card-product-${product.id}`}>
                     {/* Image Section: Big on mobile, fixed size on desktop */}
-                    <div className="relative w-full h-56 md:w-48 md:h-auto shrink-0 bg-gray-100">
+                    <div className="relative w-full h-56 md:w-48 md:h-auto shrink-0 bg-muted">
                       <img
                         src={product.image}
                         alt={product.name}
@@ -481,10 +481,10 @@ export function AdminPage() {
                       <div className="flex-1">
                         <div className="flex items-start justify-between gap-2 mb-3">
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-base truncate" data-testid={`text-name-${product.id}`}>
+                            <h3 className="font-semibold text-base truncate text-foreground" data-testid={`text-name-${product.id}`}>
                               {getProductName(product.name, language)}
                             </h3>
-                            <p className="text-sm text-gray-600 line-clamp-1">
+                            <p className="text-sm text-muted-foreground line-clamp-1">
                               {product.description}
                             </p>
                           </div>
@@ -498,7 +498,7 @@ export function AdminPage() {
 
                         {/* Price and Stock */}
                         <div className="flex flex-col gap-2">
-                          <span className="text-lg font-bold" data-testid={`text-price-${product.id}`}>
+                          <span className="text-lg font-bold text-foreground" data-testid={`text-price-${product.id}`}>
                             د.ج {product.price}
                           </span>
                           <Badge
@@ -511,27 +511,31 @@ export function AdminPage() {
                       </div>
 
                       {/* Action Buttons: Grid on mobile, Flex on desktop */}
-                      <div className="grid grid-cols-2 gap-3 mt-5 md:flex md:justify-end md:mt-0">
-                        <button
+                      <div className="grid grid-cols-2 gap-2 mt-5 md:flex md:gap-2 md:justify-end md:mt-0">
+                        <Button
+                          variant="outline"
+                          size="sm"
                           onClick={() => handleEdit(product)}
-                          className="flex items-center justify-center w-full md:w-auto px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 text-gray-700"
                           data-testid={`button-edit-${product.id}`}
+                          className="w-full md:w-auto"
                         >
                           <Edit2 className="h-4 w-4 md:mr-2" />
                           <span className="hidden md:inline">{t.edit}</span>
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
                           onClick={() => deleteMutation.mutate(product.id)}
                           disabled={deleteMutation.isPending}
-                          className="flex items-center justify-center w-full md:w-auto px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
                           data-testid={`button-delete-${product.id}`}
+                          className="w-full md:w-auto"
                         >
                           <Trash2 className="h-4 w-4 md:mr-2" />
                           <span className="hidden md:inline">{t.delete}</span>
-                        </button>
+                        </Button>
                       </div>
                     </div>
-                  </div>
+                  </Card>
                 ))
               )}
             </div>

@@ -11,6 +11,22 @@ export const getCategoryName = (categoryKey: string, language: "en" | "ar"): str
   return categoryMap[categoryKey]?.[language] || categoryKey;
 };
 
+// Helper to get translated product name
+export const getProductName = (name: string, language: "en" | "ar"): string => {
+  const nameMap: Record<string, Record<"en" | "ar", string>> = {
+    "Premium Organic Almonds": { en: "Premium Organic Almonds", ar: "لوز عضوي متميز" },
+    "Golden Flax Seeds": { en: "Golden Flax Seeds", ar: "بذور الكتان الذهبية" },
+    "Exotic Spice Blend": { en: "Exotic Spice Blend", ar: "مزيج التوابل الغريب" },
+    "Naturally Sweet Dried Mango": { en: "Naturally Sweet Dried Mango", ar: "مانجو مجفف حلو طبيعي" },
+    "Cold-Pressed Coconut Oil": { en: "Cold-Pressed Coconut Oil", ar: "زيت جوز الهند المضغوط بالبرد" },
+    "Natural Face Serum": { en: "Natural Face Serum", ar: "سيرم الوجه الطبيعي" },
+    "Organic Vitamin D3 Supplements": { en: "Organic Vitamin D3 Supplements", ar: "مكملات فيتامين د3 العضوية" },
+    "Premium Saffron Threads": { en: "Premium Saffron Threads", ar: "خيوط الزعفران المتميزة" },
+    "Creamy Almond Butter": { en: "Creamy Almond Butter", ar: "زبدة اللوز الكريمية" },
+  };
+  return nameMap[name]?.[language] || name;
+};
+
 // Helper to get translated tag name
 export const getTagName = (tag: string, language: "en" | "ar"): string => {
   const tagMap: Record<string, Record<"en" | "ar", string>> = {

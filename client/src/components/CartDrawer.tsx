@@ -5,7 +5,7 @@ import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { Link } from "wouter";
 import type { Product, CartItem } from "@shared/schema";
 import { useLanguage } from "@/lib/LanguageContext";
-import { translations } from "@/lib/translations";
+import { translations, getProductName } from "@/lib/translations";
 
 interface CartDrawerProps {
   open: boolean;
@@ -90,7 +90,7 @@ export function CartDrawer({
                   {/* Product Details */}
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-sm mb-1 truncate text-foreground" data-testid={`text-cart-item-name-${item.id}`}>
-                      {item.product.name}
+                      {getProductName(item.product.name, language)}
                     </h4>
                     <p className="text-sm text-muted-foreground mb-2">
                       د.ج {parseFloat(item.product.price).toFixed(2)}

@@ -5,7 +5,7 @@ import { Star, ShoppingCart } from "lucide-react";
 import { Link } from "wouter";
 import type { Product } from "@shared/schema";
 import { useLanguage } from "@/lib/LanguageContext";
-import { translations, getTagName, getCategoryName } from "@/lib/translations";
+import { translations, getTagName, getCategoryName, getProductName } from "@/lib/translations";
 
 interface ProductCardProps {
   product: Product;
@@ -77,7 +77,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
               {getCategoryName(product.category, language)}
             </p>
             <h3 className="font-semibold text-lg leading-tight text-foreground hover:text-primary transition-colors line-clamp-2" data-testid={`text-product-name-${product.id}`}>
-              {product.name}
+              {getProductName(product.name, language)}
             </h3>
           </div>
         </Link>

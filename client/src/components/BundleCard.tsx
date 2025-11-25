@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Zap } from "lucide-react";
 import type { Product } from "@shared/schema";
 import { useLanguage } from "@/lib/LanguageContext";
-import { translations } from "@/lib/translations";
+import { translations, getProductName } from "@/lib/translations";
 
 interface BundleCardProps {
   bundleName: string;
@@ -65,7 +65,7 @@ export function BundleCard({
             />
           </div>
           <p className="font-semibold text-sm text-foreground truncate">
-            {product1.name}
+            {getProductName(product1.name, language)}
           </p>
           <p className="text-xs text-muted-foreground">
             د.ج {product1.price}
@@ -87,7 +87,7 @@ export function BundleCard({
             />
           </div>
           <p className="font-semibold text-sm text-foreground truncate">
-            {product2.name}
+            {getProductName(product2.name, language)}
           </p>
           <p className="text-xs text-muted-foreground">
             د.ج {product2.price}

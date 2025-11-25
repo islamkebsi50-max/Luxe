@@ -14,7 +14,7 @@ import { Star, ShoppingCart, Minus, Plus, Check } from "lucide-react";
 import { Link } from "wouter";
 import type { Product } from "@shared/schema";
 import { useLanguage } from "@/lib/LanguageContext";
-import { translations } from "@/lib/translations";
+import { translations, getProductName } from "@/lib/translations";
 
 interface ProductDetailPageProps {
   product: Product;
@@ -114,7 +114,7 @@ export function ProductDetailPage({
             <div>
               <p className="text-sm text-muted-foreground mb-2">{product.category}</p>
               <h1 className="font-serif text-4xl font-bold mb-4" data-testid="text-product-name">
-                {product.name}
+                {getProductName(product.name, language)}
               </h1>
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center gap-1">

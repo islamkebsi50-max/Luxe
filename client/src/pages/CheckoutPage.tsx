@@ -20,7 +20,7 @@ import { Link } from "wouter";
 import type { Product, CartItem } from "@shared/schema";
 import { z } from "zod";
 import { useLanguage } from "@/lib/LanguageContext";
-import { translations } from "@/lib/translations";
+import { translations, getProductName } from "@/lib/translations";
 
 interface CheckoutPageProps {
   cartItems: Array<CartItem & { product: Product }>;
@@ -271,7 +271,7 @@ export function CheckoutPage({ cartItems, onPlaceOrder }: CheckoutPageProps) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm truncate">
-                        {item.product.name}
+                        {getProductName(item.product.name, language)}
                       </p>
                       <p className="text-sm text-muted-foreground">
                         Qty: {item.quantity}

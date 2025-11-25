@@ -155,7 +155,7 @@ export function ProductDetailPage({
 
             <div className="space-y-4">
               <div className="flex items-center gap-4">
-                <span className="font-semibold">Quantity:</span>
+                <span className="font-semibold">{t.quantity}:</span>
                 <div className="flex items-center gap-2">
                   <Button
                     variant="outline"
@@ -189,12 +189,12 @@ export function ProductDetailPage({
                 {addedToCart ? (
                   <>
                     <Check className="h-5 w-5 mr-2" />
-                    Added to Cart
+                    {t.addToCart}
                   </>
                 ) : (
                   <>
                     <ShoppingCart className="h-5 w-5 mr-2" />
-                    {product.inStock ? "Add to Cart" : "Out of Stock"}
+                    {product.inStock ? t.addToCart : t.outOfStock}
                   </>
                 )}
               </Button>
@@ -211,7 +211,7 @@ export function ProductDetailPage({
 
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="description">
-                <AccordionTrigger>Full Description</AccordionTrigger>
+                <AccordionTrigger>{t.productDetails}</AccordionTrigger>
                 <AccordionContent>
                   <p className="text-muted-foreground leading-relaxed">
                     {product.description}
@@ -219,7 +219,7 @@ export function ProductDetailPage({
                 </AccordionContent>
               </AccordionItem>
               <AccordionItem value="shipping">
-                <AccordionTrigger>Shipping & Returns</AccordionTrigger>
+                <AccordionTrigger>{t.returns}</AccordionTrigger>
                 <AccordionContent>
                   <div className="space-y-2 text-sm text-muted-foreground">
                     <p>• Free standard shipping on orders over $100</p>
@@ -245,7 +245,7 @@ export function ProductDetailPage({
         {/* Related Products */}
         {relatedProducts.length > 0 && (
           <section>
-            <h2 className="font-serif text-3xl font-bold mb-8">You May Also Like</h2>
+            <h2 className="font-serif text-3xl font-bold mb-8">{t.relatedProducts}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {relatedProducts.map((relatedProduct) => (
                 <ProductCard

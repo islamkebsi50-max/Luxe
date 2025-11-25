@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Star, ShoppingCart } from "lucide-react";
 import { Link } from "wouter";
 import type { Product } from "@shared/schema";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 interface ProductCardProps {
   product: Product;
@@ -11,6 +13,9 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onAddToCart }: ProductCardProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+  
   const hasDiscount = product.originalPrice && parseFloat(product.originalPrice) > parseFloat(product.price);
   const discountPercent = hasDiscount
     ? Math.round(((parseFloat(product.originalPrice!) - parseFloat(product.price)) / parseFloat(product.originalPrice!)) * 100)
@@ -106,7 +111,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
           data-testid={`button-add-to-cart-${product.id}`}
         >
           <ShoppingCart className="h-4 w-4 mr-2" />
-          {product.inStock ? "Add to Cart" : "Out of Stock"}
+          {product.inStock ? t.addToCart : t.outOfStock}
         </Button>
       </div>
     </Card>

@@ -8,6 +8,8 @@ import { useState, useEffect } from "react";
 import type { Product } from "@shared/schema";
 import heroImage1 from "@assets/generated_images/modern_living_room_hero.png";
 import heroImage2 from "@assets/generated_images/urban_fashion_lifestyle_hero.png";
+import { useLanguage } from "@/lib/LanguageContext";
+import { translations } from "@/lib/translations";
 
 interface HomePageProps {
   products: Product[];
@@ -15,6 +17,9 @@ interface HomePageProps {
 }
 
 export function HomePage({ products, onAddToCart }: HomePageProps) {
+  const { language } = useLanguage();
+  const t = translations[language];
+  
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState<string>("Nuts");
   const heroImages = [heroImage1, heroImage2];
@@ -90,7 +95,7 @@ export function HomePage({ products, onAddToCart }: HomePageProps) {
                 className="bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30 active-elevate-2"
                 data-testid="button-shop-now"
               >
-                Shop Now
+                {t.shopNow}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
@@ -113,7 +118,7 @@ export function HomePage({ products, onAddToCart }: HomePageProps) {
       {/* Category Selection Section */}
       <section className={`py-16 border-b transition-colors ${selectedCategoryInfo?.color}`}>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-serif text-3xl font-bold mb-8 text-foreground">Browse by Category</h2>
+          <h2 className="font-serif text-3xl font-bold mb-8 text-foreground">{t.categories}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {categories.map((category) => (
               <Button
@@ -147,7 +152,7 @@ export function HomePage({ products, onAddToCart }: HomePageProps) {
               ))
             ) : (
               <div className="col-span-full text-center py-16">
-                <p className="text-muted-foreground text-lg">No products available in this category</p>
+                <p className="text-muted-foreground text-lg">{t.noProducts}</p>
               </div>
             )}
           </div>

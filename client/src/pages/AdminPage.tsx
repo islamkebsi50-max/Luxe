@@ -102,6 +102,7 @@ export function AdminPage() {
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageBase64, setImageBase64] = useState<string>("");
 
 
   // Fetch products
@@ -205,20 +206,23 @@ export function AdminPage() {
       tags: "",
     });
     setImagePreview(null);
+    setImageBase64("");
   };
 
   const handleImageFileSelect = (file: File) => {
     const reader = new FileReader();
     reader.onload = (event) => {
-      const preview = event.target?.result as string;
-      setImagePreview(preview);
-      setFormData((prev) => ({ ...prev, image: "image-selected" }));
+      const base64String = event.target?.result as string;
+      setImagePreview(base64String);
+      setImageBase64(base64String);
+      setFormData((prev) => ({ ...prev, image: base64String }));
     };
     reader.readAsDataURL(file);
   };
 
   const clearImagePreview = () => {
     setImagePreview(null);
+    setImageBase64("");
     setFormData((prev) => ({ ...prev, image: "" }));
   };
 

@@ -240,7 +240,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     description: z.string().min(1, "Description is required"),
     price: z.number().min(0, "Price must be positive"),
     image: z.string().min(1, "Image URL is required"),
-    category: z.enum(["food", "cosmetic"]),
+    category: z.enum(["Nuts", "Grains", "Spices", "Dried Fruits", "Organic Products", "Cosmetics"]),
     inStock: z.boolean().default(true),
   });
 

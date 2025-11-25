@@ -54,22 +54,30 @@ Preferred communication style: Simple, everyday language.
 
 **Session Management**: Cookie-based sessions using `cookie-parser`. Each user gets a unique session ID stored in an HTTP-only cookie that persists for 30 days. This session ID links anonymous users to their cart items.
 
-**Database Layer**: Storage abstraction pattern with `IStorage` interface implemented by either `FirestoreStorage` (for Firestore backend) or `MemoryStorage` (for development without Firebase credentials). This allows for flexible database implementations without changing business logic.
+**Database Layer**: Storage abstraction pattern with `IStorage` interface implemented by `FirestoreStorage` for Firestore backend. This ensures persistent data storage across all sessions.
 
-**Development vs Production**:
-- Development: Memory storage by default (no external database required)
-- Production (with Firebase): Firestore backend with imgbb for image hosting
+**Environment Requirements**:
+- Firebase credentials required (all fields):
+  - `FIREBASE_PROJECT_ID`
+  - `FIREBASE_PRIVATE_KEY`
+  - `FIREBASE_CLIENT_EMAIL`
+- `IMGBB_API_KEY` for image uploads (optional fallback: base64 data URLs)
 - Static file serving from pre-built `dist/public` directory
-
-**Seed Data**: Automatic seeding on startup with sample products.
 
 ### Data Storage
 
-**Database Options**:
-1. **Development (Default)**: In-memory storage (`MemoryStorage`) - no external configuration needed
-2. **Production (Optional)**: Cloud Firestore with Firebase Admin SDK
+**Database**: Firebase Firestore (exclusive database)
+- Stores all products, cart items, and orders
+- Accessible only via Firebase Admin SDK with service account credentials
 
-**Image Hosting**: imgbb API for converting and hosting uploaded images as URLs
+**Image Hosting**: imgbb API for image uploads
+- Converts uploaded image files to permanent hosted URLs
+- Stored as URL strings in Firestore documents
+
+**Storage Configuration**:
+- No Firebase Storage used (Firestore is the exclusive database)
+- No local in-memory fallback (Firebase credentials required)
+- All data persisted only in Firestore
 
 **Schema Design** (defined in `shared/schema.ts`):
 
@@ -118,9 +126,10 @@ Preferred communication style: Simple, everyday language.
 
 **Image Hosting**: imgbb (requires `IMGBB_API_KEY`) - converts uploaded image files to permanent URLs
 
-**Firebase (Optional for Production)**:
-- Firestore database for persistent data storage
+**Firebase**:
+- Firestore database for persistent data storage (products, orders, cart items)
 - Firebase Admin SDK for server-side operations
+- No Firebase Storage used (Firestore is the exclusive database)
 
 **CDN/Assets**: 
 - Google Fonts API for Inter and Playfair Display typefaces
@@ -156,17 +165,11 @@ Preferred communication style: Simple, everyday language.
 
 ### Environment Variables
 
-Optional (for Firestore backend):
+**Required**:
 - `FIREBASE_PROJECT_ID` - Firebase project ID
-- `FIREBASE_API_KEY` - Firebase API key (for client-side configuration)
-- `FIREBASE_AUTH_DOMAIN` - Firebase auth domain
-- `FIREBASE_PRIVATE_KEY` - Firebase service account private key (for server-side admin SDK)
+- `FIREBASE_PRIVATE_KEY` - Firebase service account private key (server-side admin SDK)
 - `FIREBASE_CLIENT_EMAIL` - Firebase service account client email
-- `IMGBB_API_KEY` - imgbb API key for image uploads
-
-Development:
-- Uses in-memory storage by default (no configuration needed)
-- Falls back to memory storage if Firebase credentials are missing
+- `IMGBB_API_KEY` - imgbb API key for image uploads (optional fallback: base64 data URLs)
 
 Development Tools:
 - `REPL_ID` - Replit environment identifier (for dev plugins)
